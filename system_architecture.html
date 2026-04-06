@@ -60,16 +60,24 @@
     font-size: 9.5px;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: #777;
-    padding: 6px 12px;
+    color: #ffffff;
+    padding: 6px 16px;
     cursor: pointer;
-    border: 1px solid transparent;
-    border-radius: 2px;
+    border: 1px solid #555;
+    border-right: none;
+    border-radius: 0;
     white-space: nowrap;
     transition: all 0.15s;
+    background: #1e1e1e;
   }
-  .nav-tab:hover { color: #ccc; border-color: #444; }
-  .nav-tab.active { color: #f0f0ec; border-color: #666; background: #2a2a2a; }
+  .nav-tab:first-child { border-radius: 3px 0 0 3px; }
+  .nav-tab:last-child { border-right: 1px solid #555; border-radius: 0 3px 3px 0; }
+  .nav-tab:hover { color: #ffffff; background: #2e2e2e; border-color: #888; border-right: none; }
+  .nav-tab:hover + .nav-tab { border-left-color: #888; }
+  .nav-tab:last-child:hover { border-right-color: #888; }
+  .nav-tab.active { color: #ffffff; background: #3a3a3a; border-color: #aaa; border-right: none; font-weight: 600; letter-spacing: 0.12em; }
+  .nav-tab.active + .nav-tab { border-left-color: #aaa; }
+  .nav-tab:last-child.active { border-right: 1px solid #aaa; }
 
   /* PAGES */
   .page {

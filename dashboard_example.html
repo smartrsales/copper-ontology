@@ -1,0 +1,2024 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --navy:     #0B1E35;
+  --navy2:    #0f2640;
+  --steel:    #1A3A55;
+  --steel2:   #254E72;
+  --steel3:   #3A6A96;
+  --gold:     #C8973A;
+  --gold2:    #E0B85A;
+  --gold3:    #F5E4B8;
+  --white:    #FFFFFF;
+  --slate:    #8AAAC0;
+  --text:     #DDE8F0;
+  --dim:      #5A7A90;
+  --green:    #2ECC8A;
+  --gdim:     #1A6040;
+  --red:      #E05555;
+  --rdim:     #7A2020;
+  --orange:   #E08A30;
+  --purple:   #9B70D0;
+  --silver:   #C0CDD8;
+  --bg:       #050D18;
+  --p0:       #091828;
+  --p1:       #0D1F33;
+  --p2:       #102438;
+  --border:   rgba(58,106,150,0.25);
+  --bgold:    rgba(200,151,58,0.35);
+  --mono:     'IBM Plex Mono', monospace;
+  --sans:     'IBM Plex Sans', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { height: 100%; overflow: hidden; }
+body {
+  height: 100vh; overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+}
+body::before {
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:9999;
+  background: repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.025) 3px,rgba(0,0,0,0.025) 4px);
+}
+
+/* ── TOPBAR ── */
+#topbar {
+  flex-shrink: 0;
+  height: 38px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 12px;
+  background: var(--navy2);
+  border-bottom: 1px solid var(--bgold);
+  gap: 12px;
+}
+.brand { font-family:var(--mono); font-size:11px; font-weight:600; color:var(--gold); letter-spacing:.1em; white-space:nowrap; }
+.brand em { color:var(--slate); font-style:normal; font-weight:300; }
+.livebadge {
+  display:flex; align-items:center; gap:4px;
+  font-family:var(--mono); font-size:9px; color:var(--green);
+  border:1px solid var(--gdim); border-radius:2px; padding:2px 6px; white-space:nowrap;
+}
+.livebadge::before { content:''; width:5px; height:5px; border-radius:50%; background:var(--green); animation:blink 1.4s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+.tb-mid { display:flex; align-items:center; gap:14px; font-family:var(--mono); font-size:9px; color:var(--dim); flex:1; justify-content:center; }
+.tb-mid span { color:var(--gold3); }
+.mtabs { display:flex; gap:2px; }
+.mtab {
+  font-family:var(--mono); font-size:9px; padding:3px 9px;
+  border:1px solid var(--border); background:transparent;
+  color:var(--slate); cursor:pointer; border-radius:2px; transition:all .12s;
+}
+.mtab.on { background:var(--gold); color:var(--navy); border-color:var(--gold); font-weight:600; }
+.mtab:hover:not(.on) { border-color:var(--gold); color:var(--gold); }
+.tb-right { display:flex; align-items:center; gap:10px; font-family:var(--mono); font-size:9px; color:var(--slate); white-space:nowrap; }
+.tb-right span { color:var(--gold3); }
+
+/* ── TOOLBAR ── */
+#toolbar {
+  flex-shrink:0; height:28px;
+  display:flex; align-items:center; gap:8px;
+  padding:0 12px;
+  background:var(--p0);
+  border-bottom:1px solid var(--border);
+}
+.tbtn {
+  font-family:var(--mono); font-size:8px; padding:2px 8px;
+  border:1px solid var(--border); background:transparent;
+  color:var(--slate); cursor:pointer; border-radius:2px;
+  transition:all .12s; letter-spacing:.05em;
+}
+.tbtn:hover { border-color:var(--gold2); color:var(--gold2); }
+.tbtn.active { background:rgba(200,151,58,.12); border-color:var(--gold); color:var(--gold); }
+.tbtn.danger { border-color:var(--rdim); color:var(--red); }
+.tbtn.danger:hover { background:rgba(224,85,85,.1); }
+.tsep { width:1px; height:16px; background:var(--border); flex-shrink:0; }
+.tinfo { font-family:var(--mono); font-size:8px; color:var(--dim); margin-left:auto; }
+.tinfo span { color:var(--gold3); }
+
+/* ── MAIN GRID ── */
+#main {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 186px 1fr 242px;
+  grid-template-rows: 1fr;
+  gap: 1px;
+  background: var(--border);
+  overflow: hidden;
+}
+#left, #center, #right {
+  display: flex; flex-direction: column;
+  gap: 1px; background: var(--border);
+  overflow: hidden;
+}
+.p { background: var(--p1); padding: 8px 10px; overflow: hidden; }
+.ph { display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; padding-bottom:5px; border-bottom:1px solid var(--border); flex-shrink:0; }
+.pt { font-family:var(--mono); font-size:8px; font-weight:600; color:var(--gold); letter-spacing:.14em; }
+.pm { font-family:var(--mono); font-size:8px; color:var(--dim); }
+
+/* ── LEFT: MINERAL CARDS ── */
+#left { overflow-y: auto; }
+#left::-webkit-scrollbar { width:3px; }
+#left::-webkit-scrollbar-thumb { background:var(--steel); }
+
+.mcard {
+  flex-shrink: 0;
+  background:var(--p1); padding:8px 10px;
+  cursor:pointer; border-left:2px solid transparent;
+  transition:all .15s;
+  position:relative;
+}
+.mcard:hover { background:var(--p2); }
+.mcard.on { border-left-color:var(--gold); background:var(--p2); }
+.mcard-alert {
+  position:absolute; top:6px; right:8px;
+  width:6px; height:6px; border-radius:50%;
+  background:var(--red); box-shadow:0 0 6px var(--red);
+  animation:blink 1s infinite;
+  display:none;
+}
+.mcard-alert.show { display:block; }
+.mc-row1 { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:5px; }
+.mc-name { font-family:var(--mono); font-size:10px; font-weight:600; color:var(--white); }
+.mc-sym { font-size:8px; color:var(--dim); display:block; margin-top:1px; }
+.mc-score { font-family:var(--mono); font-size:17px; font-weight:600; line-height:1; text-align:right; }
+.mc-score.bull { color:var(--green); }
+.mc-score.bear { color:var(--red); }
+.mc-score.neut { color:var(--gold); }
+.mc-slabel { font-family:var(--mono); font-size:7px; color:var(--dim); text-align:right; }
+.sbars { display:flex; gap:2px; margin-bottom:4px; }
+.sbar { flex:1; height:3px; background:var(--steel); border-radius:1px; overflow:hidden; }
+.sbar-f { height:100%; border-radius:1px; transition:width .7s; }
+.sbar-f.bull { background:var(--green); }
+.sbar-f.bear { background:var(--red); }
+.sbar-f.neut { background:var(--gold); }
+.mc-row3 { display:flex; justify-content:space-between; }
+.mcs { font-family:var(--mono); font-size:8px; color:var(--dim); }
+.mcs b { color:var(--text); font-weight:400; }
+
+/* ── COMPOSITE STRIP ── */
+#cstrip {
+  flex-shrink: 0;
+  background:var(--p0); padding:0;
+  display:grid; grid-template-columns:repeat(6,1fr);
+  border-bottom:1px solid var(--bgold);
+}
+.csc {
+  padding:7px 10px; border-left:1px solid var(--border);
+  cursor:pointer; transition:background .12s; position:relative;
+}
+.csc:first-child { border-left:none; }
+.csc:hover { background:rgba(200,151,58,.05); }
+.csc-tooltip {
+  display:none; position:absolute; top:100%; left:50%; transform:translateX(-50%);
+  background:var(--navy2); border:1px solid var(--gold); border-radius:3px;
+  padding:6px 8px; font-family:var(--mono); font-size:7px; color:var(--text);
+  white-space:nowrap; z-index:100; margin-top:3px;
+  pointer-events:none;
+}
+.csc:hover .csc-tooltip { display:block; }
+.csl { font-family:var(--mono); font-size:7px; color:var(--dim); letter-spacing:.08em; margin-bottom:3px; }
+.csv { font-family:var(--mono); font-size:18px; font-weight:600; line-height:1; }
+.csv.bull { color:var(--green); } .csv.bear { color:var(--red); } .csv.g { color:var(--gold); }
+.csub { font-family:var(--mono); font-size:8px; margin-top:2px; }
+.csub.up { color:var(--green); } .csub.dn { color:var(--red); } .csub.nt { color:var(--slate); }
+
+/* ── CHART ── */
+#chart-panel { flex:0 0 auto; background:var(--p1); padding:8px 10px; }
+#chart-panel canvas { display:block; width:100%; cursor:crosshair; }
+.ctabs { display:flex; gap:1px; }
+.ctab {
+  font-family:var(--mono); font-size:8px; padding:3px 8px;
+  background:var(--steel); color:var(--slate); cursor:pointer;
+  border:none; border-radius:1px; transition:all .12s;
+}
+.ctab.on { background:var(--steel2); color:var(--gold); }
+.ctab:hover:not(.on) { color:var(--text); }
+
+/* crosshair tooltip */
+#chart-crosshair {
+  display:none; position:absolute; pointer-events:none;
+  background:var(--navy2); border:1px solid var(--bgold);
+  padding:5px 8px; border-radius:2px; z-index:50;
+  font-family:var(--mono); font-size:8px; color:var(--text);
+  line-height:1.6;
+}
+
+/* ── SIGNAL GRID ── */
+#sigrow {
+  flex-shrink:0;
+  background:var(--p1); padding:6px 8px;
+  display:grid; grid-template-columns:repeat(5,1fr); gap:5px;
+}
+.sc {
+  background:var(--navy2); border:1px solid var(--border);
+  padding:6px 7px; border-radius:2px; position:relative; overflow:hidden;
+  cursor:pointer; transition:all .15s;
+}
+.sc:hover { border-color:rgba(200,151,58,.5); transform:translateY(-1px); }
+.sc.expanded { border-color:var(--gold); }
+.sc::after { content:''; position:absolute; top:0; left:0; right:0; height:2px; }
+.sc.bull::after { background:var(--green); } .sc.bear::after { background:var(--red); } .sc.neut::after { background:var(--gold); }
+.sc-name { font-family:var(--mono); font-size:7px; color:var(--dim); letter-spacing:.08em; margin-bottom:3px; }
+.sc-val { font-family:var(--mono); font-size:20px; font-weight:600; line-height:1; margin-bottom:1px; transition:all .3s; }
+.sc-val.bull { color:var(--green); } .sc-val.bear { color:var(--red); } .sc-val.neut { color:var(--gold); }
+.sc-dir { font-family:var(--mono); font-size:8px; margin-bottom:4px; }
+.sc-dir.bull { color:var(--green); } .sc-dir.bear { color:var(--red); } .sc-dir.neut { color:var(--gold); }
+.sc-bar { height:2px; background:var(--steel); border-radius:1px; overflow:hidden; margin-bottom:3px; }
+.sc-bar-f { height:100%; border-radius:1px; transition:width .9s; }
+.sc-bar-f.bull { background:var(--green); box-shadow:0 0 5px var(--green); }
+.sc-bar-f.bear { background:var(--red); box-shadow:0 0 5px var(--red); }
+.sc-bar-f.neut { background:var(--gold); box-shadow:0 0 5px var(--gold); }
+.sc-sub { font-family:var(--mono); font-size:7px; color:var(--dim); line-height:1.4; }
+.sc-expand { display:none; margin-top:5px; padding-top:5px; border-top:1px solid var(--border); }
+.sc-expand.show { display:block; }
+.sc-expand-item { font-family:var(--mono); font-size:7px; color:var(--slate); padding:2px 0; display:flex; justify-content:space-between; }
+.sc-expand-item span { color:var(--gold3); }
+
+/* ── EVENTS TAPE ── */
+#etape {
+  flex-shrink:0; background:var(--p1); padding:6px 8px;
+  display:flex; gap:5px; overflow-x:auto;
+}
+#etape::-webkit-scrollbar { height:2px; } #etape::-webkit-scrollbar-thumb { background:var(--steel); }
+#etape-header { flex-shrink:0; background:var(--p0); padding:5px 10px; display:flex; justify-content:space-between; align-items:center; }
+.ech {
+  flex-shrink:0; background:var(--navy2); border:1px solid var(--border);
+  border-radius:2px; padding:5px 9px; min-width:148px;
+  position:relative; overflow:hidden; cursor:pointer;
+  transition:all .15s;
+}
+.ech:hover { border-color:var(--gold); transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,0,0,.4); }
+.ech.dismissed { opacity:.35; }
+.ech::before { content:''; position:absolute; left:0; top:0; bottom:0; width:2px; }
+.ech.high::before { background:var(--red); } .ech.med::before { background:var(--orange); } .ech.low::before { background:var(--green); }
+.em { font-family:var(--mono); font-size:7px; font-weight:600; color:var(--gold); letter-spacing:.08em; }
+.et { font-size:9px; color:var(--text); margin:2px 0; line-height:1.25; font-weight:500; }
+.ed { display:flex; justify-content:space-between; margin-top:3px; }
+.ette { font-family:var(--mono); font-size:8px; color:var(--orange); }
+.eimp { font-family:var(--mono); font-size:8px; }
+.eimp.high { color:var(--red); } .eimp.med { color:var(--orange); }
+.e-dismiss { position:absolute; top:3px; right:5px; font-size:9px; color:var(--dim); cursor:pointer; }
+.e-dismiss:hover { color:var(--red); }
+
+/* ── LEADING INDICATORS ── */
+#lirow { flex:1; min-height:0; background:var(--p1); padding:6px 8px; overflow-y:auto; }
+#lirow::-webkit-scrollbar { width:2px; } #lirow::-webkit-scrollbar-thumb { background:var(--steel); }
+.li { display:flex; align-items:center; gap:6px; padding:4px 0; border-bottom:1px solid var(--border); cursor:pointer; transition:background .1s; border-radius:1px; }
+.li:hover { background:rgba(58,106,150,.08); }
+.li:last-child { border-bottom:none; }
+.li-n { font-family:var(--mono); font-size:8px; color:var(--dim); width:12px; flex-shrink:0; }
+.li-name { flex:1; font-size:8px; color:var(--text); }
+.li-lead { font-family:var(--mono); font-size:7px; color:var(--gold); width:34px; text-align:right; }
+.li-bar { width:44px; }
+.li-bar-bg { height:3px; background:var(--steel); border-radius:1px; overflow:hidden; }
+.li-bar-f { height:100%; border-radius:1px; }
+.li-d { font-family:var(--mono); font-size:9px; width:12px; text-align:center; }
+
+/* ── RIGHT: DEPLOY ── */
+#deploy { flex-shrink:0; background:var(--p1); padding:8px 10px; }
+.di { display:flex; align-items:center; gap:6px; padding:4px 0; border-bottom:1px solid var(--border); }
+.di:last-child { border-bottom:none; }
+.di-sym { font-family:var(--mono); font-size:8px; font-weight:600; color:var(--gold); width:24px; }
+.di-wrap { flex:1; }
+.di-name { font-size:8px; color:var(--dim); margin-bottom:2px; }
+.di-bar { height:5px; background:var(--steel); border-radius:1px; overflow:hidden; cursor:pointer; }
+.di-f { height:100%; border-radius:1px; transition:width .5s; }
+.di-pct { font-family:var(--mono); font-size:9px; font-weight:600; width:28px; text-align:right; }
+.recbox {
+  background:linear-gradient(135deg,rgba(46,204,138,.07),rgba(46,204,138,.02));
+  border:1px solid rgba(46,204,138,.25); border-radius:2px; padding:7px; margin-top:6px;
+}
+.rech { font-family:var(--mono); font-size:7px; color:var(--green); letter-spacing:.1em; margin-bottom:5px; display:flex; justify-content:space-between; }
+.reci { font-size:8px; color:var(--text); margin-bottom:2px; padding-left:9px; position:relative; cursor:pointer; transition:color .1s; }
+.reci::before { content:'▸'; position:absolute; left:0; color:var(--green); font-size:7px; top:1px; }
+.reci:hover { color:var(--gold2); }
+.reci.acted { color:var(--dim); text-decoration:line-through; }
+.reci.acted::before { content:'✓'; color:var(--green); }
+
+/* ── BACKTEST ── */
+#backtest { flex-shrink:0; background:var(--p1); padding:8px 10px; }
+.btr { display:flex; justify-content:space-between; align-items:center; padding:3px 0; border-bottom:1px solid var(--border); cursor:default; }
+.btr:hover { background:rgba(58,106,150,.06); }
+.btr:last-child { border-bottom:none; }
+.btl { font-family:var(--mono); font-size:8px; color:var(--slate); }
+.btv { font-family:var(--mono); font-size:9px; font-weight:600; }
+.btv.p { color:var(--green); } .btv.n { color:var(--red); } .btv.t { color:var(--gold3); }
+#bt-chart { display:block; margin-top:6px; cursor:pointer; }
+
+/* ── MODEL CONFIDENCE ── */
+#confidence { flex-shrink:0; background:var(--p1); padding:8px 10px; }
+.crw { display:flex; align-items:center; gap:8px; margin:6px 0 5px; }
+.mstats { display:grid; grid-template-columns:1fr 1fr; gap:3px; }
+.mstat { background:var(--navy2); border:1px solid var(--border); border-radius:2px; padding:4px 6px; cursor:pointer; transition:border-color .12s; }
+.mstat:hover { border-color:var(--gold); }
+.mstat-l { font-family:var(--mono); font-size:7px; color:var(--dim); }
+.mstat-v { font-family:var(--mono); font-size:9px; font-weight:600; }
+
+/* ── 2ND ORDER ── */
+#second { flex:1; min-height:0; background:var(--p1); padding:8px 10px; overflow-y:auto; }
+#second::-webkit-scrollbar { width:2px; } #second::-webkit-scrollbar-thumb { background:var(--steel); }
+.soi { display:flex; align-items:flex-start; gap:6px; padding:5px 0; border-bottom:1px solid var(--border); cursor:pointer; border-radius:1px; }
+.soi:hover { background:rgba(58,106,150,.06); }
+.soi:last-child { border-bottom:none; }
+.sodot { width:5px; height:5px; border-radius:50%; flex-shrink:0; margin-top:3px; }
+.sodot.pos { background:var(--green); box-shadow:0 0 5px var(--green); }
+.sodot.neg { background:var(--red); box-shadow:0 0 5px var(--red); }
+.sodot.nt { background:var(--gold); box-shadow:0 0 4px var(--gold); }
+.sotitle { font-size:8px; font-weight:600; color:var(--text); margin-bottom:1px; }
+.sodesc { font-size:7px; color:var(--dim); line-height:1.35; }
+.soiact { font-family:var(--mono); font-size:7px; margin-top:2px; }
+.soiact.pos { color:var(--green); } .soiact.neg { color:var(--red); }
+
+/* ── FEEDBACK ── */
+#feedback { flex-shrink:0; background:var(--p1); padding:8px 10px; }
+.fbl { display:grid; grid-template-columns:1fr 20px 1fr; gap:3px; align-items:center; margin-bottom:4px; }
+.fbn { background:var(--navy2); border:1px solid var(--border); border-radius:2px; padding:4px 6px; cursor:pointer; transition:border-color .12s; }
+.fbn:hover { border-color:var(--gold); }
+.fbn-t { font-family:var(--mono); font-size:7px; color:var(--gold); margin-bottom:1px; }
+.fbn-v { font-family:var(--mono); font-size:9px; font-weight:600; color:var(--text); }
+.fbarr { font-family:var(--mono); font-size:9px; color:var(--steel3); text-align:center; }
+.fbnote { font-family:var(--mono); font-size:7px; color:var(--gold); padding-left:4px; margin-bottom:6px; }
+
+/* ── MODAL ── */
+#modal-overlay {
+  display:none; position:fixed; inset:0; z-index:500;
+  background:rgba(5,13,24,.85); backdrop-filter:blur(3px);
+  align-items:center; justify-content:center;
+}
+#modal-overlay.show { display:flex; }
+#modal {
+  background:var(--navy2); border:1px solid var(--bgold);
+  border-radius:4px; padding:18px 20px; min-width:320px; max-width:480px;
+  position:relative; box-shadow:0 20px 60px rgba(0,0,0,.7);
+  animation:modalIn .18s ease;
+}
+@keyframes modalIn { from{transform:translateY(10px);opacity:0} to{transform:translateY(0);opacity:1} }
+#modal-close {
+  position:absolute; top:10px; right:12px;
+  font-family:var(--mono); font-size:12px; color:var(--dim); cursor:pointer;
+  background:none; border:none;
+}
+#modal-close:hover { color:var(--red); }
+#modal-title { font-family:var(--mono); font-size:10px; font-weight:600; color:var(--gold); letter-spacing:.1em; margin-bottom:12px; }
+#modal-body { font-size:9px; color:var(--text); line-height:1.6; }
+.modal-row { display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px solid var(--border); }
+.modal-row:last-child { border-bottom:none; }
+.modal-label { font-family:var(--mono); font-size:8px; color:var(--dim); }
+.modal-val { font-family:var(--mono); font-size:8px; font-weight:600; color:var(--gold3); }
+.modal-val.bull { color:var(--green); } .modal-val.bear { color:var(--red); }
+
+/* ── ALERT TOASTS ── */
+#toasts { position:fixed; top:44px; right:12px; z-index:600; display:flex; flex-direction:column; gap:5px; pointer-events:none; }
+.toast {
+  background:var(--navy2); border:1px solid var(--bgold);
+  border-radius:3px; padding:7px 12px; min-width:200px;
+  font-family:var(--mono); font-size:8px; color:var(--text);
+  animation:toastIn .2s ease;
+  pointer-events:auto;
+  box-shadow:0 4px 20px rgba(0,0,0,.5);
+}
+@keyframes toastIn { from{transform:translateX(20px);opacity:0} to{transform:translateX(0);opacity:1} }
+.toast-t { color:var(--gold); font-size:7px; letter-spacing:.08em; margin-bottom:3px; }
+.toast.bull { border-left:3px solid var(--green); }
+.toast.bear { border-left:3px solid var(--red); }
+.toast.info { border-left:3px solid var(--gold); }
+
+/* ── ALERT THRESHOLD PANEL ── */
+#alert-panel {
+  display:none; position:fixed; top:38px; right:0; z-index:400;
+  background:var(--navy2); border:1px solid var(--bgold); border-top:none;
+  padding:12px; width:260px;
+  box-shadow:-4px 4px 20px rgba(0,0,0,.5);
+}
+#alert-panel.show { display:block; }
+.alabel { font-family:var(--mono); font-size:8px; color:var(--gold); letter-spacing:.08em; margin-bottom:8px; }
+.arow { display:flex; align-items:center; gap:6px; margin-bottom:7px; }
+.arow-n { font-family:var(--mono); font-size:8px; color:var(--slate); flex:1; }
+.arow input[type=range] {
+  width:80px; accent-color:var(--gold); cursor:pointer;
+}
+.arow-v { font-family:var(--mono); font-size:8px; color:var(--gold3); width:30px; text-align:right; }
+.arow input[type=checkbox] { accent-color:var(--gold); cursor:pointer; }
+
+/* ── COMPARISON BAR ── */
+#compare-bar {
+  display:none; position:fixed; bottom:0; left:0; right:0; z-index:400;
+  height:28px; background:var(--navy2); border-top:1px solid var(--bgold);
+  padding:0 12px; align-items:center; gap:12px;
+  font-family:var(--mono); font-size:8px; color:var(--dim);
+}
+#compare-bar.show { display:flex; }
+.cb-item { display:flex; align-items:center; gap:6px; padding:3px 8px; background:var(--p1); border-radius:2px; border:1px solid var(--border); }
+.cb-sym { font-weight:600; color:var(--gold); }
+.cb-val { color:var(--text); }
+.cb-rm { color:var(--dim); cursor:pointer; margin-left:4px; }
+.cb-rm:hover { color:var(--red); }
+
+/* ── SEARCH ── */
+#search-wrap {
+  display:none; position:fixed; top:38px; left:50%; transform:translateX(-50%); z-index:400;
+  background:var(--navy2); border:1px solid var(--bgold); border-top:none;
+  padding:10px; width:320px; box-shadow:0 8px 24px rgba(0,0,0,.6);
+}
+#search-wrap.show { display:block; }
+#search-input {
+  width:100%; background:var(--p1); border:1px solid var(--steel2);
+  color:var(--text); font-family:var(--mono); font-size:10px;
+  padding:6px 10px; border-radius:2px; outline:none;
+}
+#search-input:focus { border-color:var(--gold); }
+#search-results { margin-top:6px; }
+.sr { padding:5px 6px; cursor:pointer; border-radius:2px; font-family:var(--mono); font-size:8px; color:var(--text); display:flex; justify-content:space-between; }
+.sr:hover { background:rgba(200,151,58,.1); }
+
+::-webkit-scrollbar { width:3px; height:3px; }
+::-webkit-scrollbar-track { background:var(--bg); }
+::-webkit-scrollbar-thumb { background:var(--steel); border-radius:2px; }
+
+/* ── PULSE on data update ── */
+@keyframes flash { 0%{background:rgba(200,151,58,.18)} 100%{background:transparent} }
+.flash { animation:flash .4s ease; }
+</style></head><body>
+
+<!-- TOPBAR -->
+<div id="topbar">
+  <div style="display:flex;align-items:center;gap:10px;flex-shrink:0">
+    <div class="brand">DMX<em> AI SYSTEM</em> · MINERAL INTELLIGENCE</div>
+    <div class="livebadge">LIVE</div>
+  </div>
+  <div class="tb-mid">
+    BACKTEST <span id="bt-status" style="color:var(--green)">ACTIVE</span>
+    &nbsp;·&nbsp; SIGNALS <span id="sig-count">52</span> ACTIVE
+    &nbsp;·&nbsp; UPDATE <span id="last-up">17:39:01</span>
+    &nbsp;·&nbsp; CYCLES <span id="cycle-count">15</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+    <div class="mtabs" id="mtabs"><button class="mtab on" data-i="0">Cu</button><button class="mtab " data-i="1">Co</button><button class="mtab " data-i="2">Ni</button><button class="mtab " data-i="3">W</button><button class="mtab " data-i="4">REE</button><button class="mtab " data-i="5">Ag</button><button class="mtab " data-i="6">Au</button></div>
+    <div class="tb-right">SYS <span id="clock">17:39:02</span></div>
+  </div>
+</div>
+
+<!-- TOOLBAR -->
+<div id="toolbar">
+  <button class="tbtn active" id="btn-alerts" onclick="toggleAlerts()">⚑ ALERTS</button>
+  <button class="tbtn" id="btn-compare" onclick="toggleCompareMode()">⊞ COMPARE</button>
+  <button class="tbtn" onclick="openSearch()">⌕ SEARCH</button>
+  <div class="tsep"></div>
+  <button class="tbtn" id="btn-pause" onclick="togglePause()">⏸ PAUSE</button>
+  <button class="tbtn" onclick="exportSnapshot()">↓ SNAPSHOT</button>
+  <button class="tbtn" onclick="resetAll()">↺ RESET</button>
+  <div class="tsep"></div>
+  <button class="tbtn" id="btn-theme" onclick="cycleView()">◈ VIEW: STANDARD</button>
+  <div class="tinfo">ALERTS: <span id="alert-count">5</span> FIRED · DISMISSED: <span id="dismissed-count">0</span></div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+
+  <!-- LEFT -->
+  <div id="left"><div class="mcard on" onclick="sel(0,event)" data-mid="Cu">
+        <div class="mcard-alert "></div>
+        <div class="mc-row1">
+          <div><div class="mc-name">Copper</div><span class="mc-sym">LME/CU</span></div>
+          <div><div class="mc-score bull">78</div><div class="mc-slabel">/100</div></div>
+        </div>
+        <div class="sbars">
+          <div class="sbar"><div class="sbar-f bull" style="width:83%"></div></div>
+          <div class="sbar"><div class="sbar-f bull" style="width:69%"></div></div>
+          <div class="sbar"><div class="sbar-f bull" style="width:69%"></div></div>
+          <div class="sbar"><div class="sbar-f bull" style="width:89%"></div></div>
+          <div class="sbar"><div class="sbar-f bull" style="width:82%"></div></div>
+        </div>
+        <div class="mc-row3">
+          <div class="mcs">$<b>9,206</b></div>
+          <div class="mcs" style="color:var(--green)">+0.83%</div>
+          <div class="mcs">D:<b>26%</b></div>
+        </div>
+      </div><div class="mcard " onclick="sel(1,event)" data-mid="Co">
+        <div class="mcard-alert show"></div>
+        <div class="mc-row1">
+          <div><div class="mc-name">Cobalt</div><span class="mc-sym">LME/CO</span></div>
+          <div><div class="mc-score bull">82</div><div class="mc-slabel">/100</div></div>
+        </div>
+        <div class="sbars">
+          <div class="sbar"><div class="sbar-f bull" style="width:93%"></div></div>
+          <div class="sbar"><div class="sbar-f bull" style="width:91%"></div></div>
+          <div class="sbar"><div class="sbar-f bull" style="width:72%"></div></div>
+          <div class="sbar"><div class="sbar-f bull" style="width:68%"></div></div>
+          <div class="sbar"><div class="sbar-f bull" style="width:85%"></div></div>
+        </div>
+        <div class="mc-row3">
+          <div class="mcs">$<b>32,777</b></div>
+          <div class="mcs" style="color:var(--red)">-0.25%</div>
+          <div class="mcs">D:<b>20%</b></div>
+        </div>
+      </div><div class="mcard " onclick="sel(2,event)" data-mid="Ni">
+        <div class="mcard-alert "></div>
+        <div class="mc-row1">
+          <div><div class="mc-name">Nickel</div><span class="mc-sym">LME/NI</span></div>
+          <div><div class="mc-score neut">42</div><div class="mc-slabel">/100</div></div>
+        </div>
+        <div class="sbars">
+          <div class="sbar"><div class="sbar-f bear" style="width:32%"></div></div>
+          <div class="sbar"><div class="sbar-f neut" style="width:50%"></div></div>
+          <div class="sbar"><div class="sbar-f bear" style="width:36%"></div></div>
+          <div class="sbar"><div class="sbar-f neut" style="width:52%"></div></div>
+          <div class="sbar"><div class="sbar-f bear" style="width:41%"></div></div>
+        </div>
+        <div class="mc-row3">
+          <div class="mcs">$<b>15,719</b></div>
+          <div class="mcs" style="color:var(--green)">+0.19%</div>
+          <div class="mcs">D:<b>12%</b></div>
+        </div>
+      </div><div class="mcard " onclick="sel(3,event)" data-mid="W">
+        <div class="mcard-alert "></div>
+        <div class="mc-row1">
+          <div><div class="mc-name">Tungsten</div><span class="mc-sym">APT/W</span></div>
+          <div><div class="mc-score bull">67</div><div class="mc-slabel">/100</div></div>
+        </div>
+        <div class="sbars">
+          <div class="sbar"><div class="sbar-f neut" style="width:67%"></div></div>
+          <div class="sbar"><div class="sbar-f neut" style="width:52%"></div></div>
+          <div class="sbar"><div class="sbar-f bull" style="width:85%"></div></div>
+          <div class="sbar"><div class="sbar-f neut" style="width:62%"></div></div>
+          <div class="sbar"><div class="sbar-f bull" style="width:68%"></div></div>
+        </div>
+        <div class="mc-row3">
+          <div class="mcs">$<b>289.5</b></div>
+          <div class="mcs" style="color:var(--green)">+0.7%</div>
+          <div class="mcs">D:<b>9%</b></div>
+        </div>
+      </div><div class="mcard " onclick="sel(4,event)" data-mid="REE">
+        <div class="mcard-alert show"></div>
+        <div class="mc-row1">
+          <div><div class="mc-name">Rare Earths</div><span class="mc-sym">SMM/RE</span></div>
+          <div><div class="mc-score bull">87</div><div class="mc-slabel">/100</div></div>
+        </div>
+        <div class="sbars">
+          <div class="sbar"><div class="sbar-f bull" style="width:89%"></div></div>
+          <div class="sbar"><div class="sbar-f bull" style="width:79%"></div></div>
+          <div class="sbar"><div class="sbar-f bull" style="width:93%"></div></div>
+          <div class="sbar"><div class="sbar-f bull" style="width:85%"></div></div>
+          <div class="sbar"><div class="sbar-f bull" style="width:89%"></div></div>
+        </div>
+        <div class="mc-row3">
+          <div class="mcs">$<b>138.5</b></div>
+          <div class="mcs" style="color:var(--green)">+0.81%</div>
+          <div class="mcs">D:<b>8%</b></div>
+        </div>
+      </div><div class="mcard " onclick="sel(5,event)" data-mid="Ag">
+        <div class="mcard-alert "></div>
+        <div class="mc-row1">
+          <div><div class="mc-name">Silver</div><span class="mc-sym">COMEX/SI</span></div>
+          <div><div class="mc-score bull">74</div><div class="mc-slabel">/100</div></div>
+        </div>
+        <div class="sbars">
+          <div class="sbar"><div class="sbar-f bull" style="width:82%"></div></div>
+          <div class="sbar"><div class="sbar-f neut" style="width:54%"></div></div>
+          <div class="sbar"><div class="sbar-f bull" style="width:73%"></div></div>
+          <div class="sbar"><div class="sbar-f bull" style="width:84%"></div></div>
+          <div class="sbar"><div class="sbar-f bull" style="width:76%"></div></div>
+        </div>
+        <div class="mc-row3">
+          <div class="mcs">$<b>30.55</b></div>
+          <div class="mcs" style="color:var(--green)">+1.08%</div>
+          <div class="mcs">D:<b>14%</b></div>
+        </div>
+      </div><div class="mcard " onclick="sel(6,event)" data-mid="Au">
+        <div class="mcard-alert "></div>
+        <div class="mc-row1">
+          <div><div class="mc-name">Gold</div><span class="mc-sym">COMEX/GC</span></div>
+          <div><div class="mc-score neut">59</div><div class="mc-slabel">/100</div></div>
+        </div>
+        <div class="sbars">
+          <div class="sbar"><div class="sbar-f neut" style="width:47%"></div></div>
+          <div class="sbar"><div class="sbar-f neut" style="width:47%"></div></div>
+          <div class="sbar"><div class="sbar-f bull" style="width:70%"></div></div>
+          <div class="sbar"><div class="sbar-f bull" style="width:71%"></div></div>
+          <div class="sbar"><div class="sbar-f neut" style="width:61%"></div></div>
+        </div>
+        <div class="mc-row3">
+          <div class="mcs">$<b>2,312</b></div>
+          <div class="mcs" style="color:var(--green)">+0.23%</div>
+          <div class="mcs">D:<b>11%</b></div>
+        </div>
+      </div></div>
+
+  <!-- CENTER -->
+  <div id="center">
+    <div id="cstrip">
+    <div class="csc">
+      <div class="csl">COMPOSITE SCORE</div>
+      <div class="csv bull">78</div>
+      <div class="csub up">▲ BULL</div>
+      <div class="csc-tooltip">Score: 78/100 · Trend: BULL · 5-signal composite</div>
+    </div>
+    <div class="csc">
+      <div class="csl">PRICE</div>
+      <div class="csv g">$9,206</div>
+      <div class="csub up">+0.83% 24H</div>
+      <div class="csc-tooltip">Live: $9,206 · Change: +0.83% · Symbol: LME/CU</div>
+    </div>
+    <div class="csc">
+      <div class="csl">SIGNAL COUNT</div>
+      <div class="csv g">47</div>
+      <div class="csub nt">12 new today</div>
+      <div class="csc-tooltip">47 active signals · 12 new in last 24h · 3 critical threshold crosses</div>
+    </div>
+    <div class="csc">
+      <div class="csl">TIME TO EVENT</div>
+      <div class="csv bull">T-2d</div>
+      <div class="csub nt">LME Inventory Draw</div>
+      <div class="csc-tooltip">Nearest event: LME Inventory Draw · T-2 days · Confidence: 93%</div>
+    </div>
+    <div class="csc">
+      <div class="csl">BACKTEST WIN</div>
+      <div class="csv bull">67.3%</div>
+      <div class="csub up">862 cycles</div>
+      <div class="csc-tooltip">Win rate: 67.3% · Sharpe: 2.18 · Max DD: -4.1% · 862 cycles</div>
+    </div>
+    <div class="csc">
+      <div class="csl">DEPLOY REC.</div>
+      <div class="csv g">26%</div>
+      <div class="csub nt">of total allocation</div>
+      <div class="csc-tooltip">Recommended: 26% · Risk-adjusted for current signal strength</div>
+    </div></div>
+    <div id="chart-panel" class="p" style="position:relative">
+      <div class="ph">
+        <span class="pt">PRICE · SIGNAL OVERLAY · TREND BANDS · MA20</span>
+        <div style="display:flex;gap:4px;align-items:center">
+          <div class="ctabs" id="ctabs">
+            <button class="ctab on" data-r="1D">1D</button>
+            <button class="ctab" data-r="5D">5D</button>
+            <button class="ctab" data-r="1M">1M</button>
+            <button class="ctab" data-r="3M">3M</button>
+          </div>
+          <span class="pm" id="chart-meta">Copper · $9,206 · ▲0.83%</span>
+        </div>
+      </div>
+      <canvas id="mchart" height="164" width="1277"></canvas>
+      <div id="chart-crosshair"></div>
+    </div>
+    <div id="sigrow"><div class="sc bull " onclick="toggleSig(0)">
+      <div class="sc-name">PHYSICAL<br>TIGHTNESS</div>
+      <div class="sc-val bull">83</div>
+      <div class="sc-dir bull">▲ BULL</div>
+      <div class="sc-bar"><div class="sc-bar-f bull" style="width:83%"></div></div>
+      <div class="sc-sub">LME stocks -4.2%<br>Warehouse queues ↑<br><span style="color:var(--gold3)">Smelter outage: DRC</span></div>
+      <div class="sc-expand ">
+        <div class="sc-expand-item">LME Stock Change: <span>–4.2%</span></div><div class="sc-expand-item">Warrant Cancel Rate: <span>12.3%</span></div><div class="sc-expand-item">Smelter Util.: <span>91.4%</span></div>
+        <div style="font-family:var(--mono);font-size:7px;color:var(--dim);margin-top:3px;line-height:1.3">Physical market tightness score derived from LME stock levels, warrant cancellations, and smelter utilization.</div>
+      </div>
+    </div><div class="sc bull " onclick="toggleSig(1)">
+      <div class="sc-name">LOGISTICS<br>DISRUPTION</div>
+      <div class="sc-val bull">69</div>
+      <div class="sc-dir bull">▲ BULL</div>
+      <div class="sc-bar"><div class="sc-bar-f bull" style="width:69%"></div></div>
+      <div class="sc-sub">Port delay: +3.1d<br>Vessel backlog x2.4<br><span style="color:var(--gold3)">Rail: Zambia partial</span></div>
+      <div class="sc-expand ">
+        <div class="sc-expand-item">Port Delay Avg: <span>+3.1d</span></div><div class="sc-expand-item">Vessel Backlog: <span>×2.4</span></div><div class="sc-expand-item">Rail Disruption: <span>Partial</span></div>
+        <div style="font-family:var(--mono);font-size:7px;color:var(--dim);margin-top:3px;line-height:1.3">Logistics disruption index: freight delays, port congestion, and vessel availability impacting supply chains.</div>
+      </div>
+    </div><div class="sc bull " onclick="toggleSig(2)">
+      <div class="sc-name">POLICY<br>RISK</div>
+      <div class="sc-val bull">69</div>
+      <div class="sc-dir bull">▲ BULL</div>
+      <div class="sc-bar"><div class="sc-bar-f bull" style="width:69%"></div></div>
+      <div class="sc-sub">Export quota review<br>Labor unrest: Escondida<br><span style="color:var(--gold3)">Permit freeze: CN</span></div>
+      <div class="sc-expand ">
+        <div class="sc-expand-item">Quota Review: <span>Active</span></div><div class="sc-expand-item">Strike Probability: <span>38%</span></div><div class="sc-expand-item">Permit Status: <span>Freeze CN</span></div>
+        <div style="font-family:var(--mono);font-size:7px;color:var(--dim);margin-top:3px;line-height:1.3">Policy risk composite: export quotas, labor action probability, and regulatory change signals.</div>
+      </div>
+    </div><div class="sc bull " onclick="toggleSig(3)">
+      <div class="sc-name">DEMAND<br>NOWCAST</div>
+      <div class="sc-val bull">89</div>
+      <div class="sc-dir bull">▲ BULL</div>
+      <div class="sc-bar"><div class="sc-bar-f bull" style="width:89%"></div></div>
+      <div class="sc-sub">EV prod. +8.2% YoY<br>PMI: 54.1 (exp 52)<br><span style="color:var(--gold3)">Grid tender +$4.2B</span></div>
+      <div class="sc-expand ">
+        <div class="sc-expand-item">EV Production: <span>+8.2% YoY</span></div><div class="sc-expand-item">PMI Composite: <span>54.1</span></div><div class="sc-expand-item">Grid Capex: <span>$4.2B</span></div>
+        <div style="font-family:var(--mono);font-size:7px;color:var(--dim);margin-top:3px;line-height:1.3">Demand nowcast integrating manufacturing PMI, EV production data, and grid infrastructure spend.</div>
+      </div>
+    </div><div class="sc bull " onclick="toggleSig(4)">
+      <div class="sc-name">COMPOSITE<br>SIGNAL</div>
+      <div class="sc-val bull">82</div>
+      <div class="sc-dir bull">▲ BULL</div>
+      <div class="sc-bar"><div class="sc-bar-f bull" style="width:82%"></div></div>
+      <div class="sc-sub">Rules engine: BULL<br>Z-score: +2.1σ<br><span style="color:var(--gold3)">Gradient: p=0.83</span></div>
+      <div class="sc-expand ">
+        <div class="sc-expand-item">Z-Score: <span>+2.1σ</span></div><div class="sc-expand-item">ML Gradient: <span>p=0.83</span></div><div class="sc-expand-item">Rules Engine: <span>BULL</span></div>
+        <div style="font-family:var(--mono);font-size:7px;color:var(--dim);margin-top:3px;line-height:1.3">Composite rules-engine signal: z-score threshold cross with ML gradient confirmation.</div>
+      </div>
+    </div></div>
+    <div id="etape-header" class="p" style="padding:5px 10px">
+      <span class="pt">EVENTS · TIME-TO-REALIZATION</span>
+      <span class="pm" id="ev-count">10 / 10 events</span>
+    </div>
+    <div id="etape">
+    <div class="ech high" onclick="showEventDetail(0)">
+      <div class="e-dismiss" onclick="dismissEvent(event,0)">✕</div>
+      <div class="em">Cu · CONF 87%</div>
+      <div class="et">Escondida Strike Auth. Vote</div>
+      <div class="ed">
+        <span class="ette">T-4d</span>
+        <span class="eimp high">HIGH</span>
+      </div>
+    </div>
+    <div class="ech high" onclick="showEventDetail(1)">
+      <div class="e-dismiss" onclick="dismissEvent(event,1)">✕</div>
+      <div class="em">Co · CONF 79%</div>
+      <div class="et">DRC Export Quota Announcement</div>
+      <div class="ed">
+        <span class="ette">T-11d</span>
+        <span class="eimp high">HIGH</span>
+      </div>
+    </div>
+    <div class="ech high" onclick="showEventDetail(2)">
+      <div class="e-dismiss" onclick="dismissEvent(event,2)">✕</div>
+      <div class="em">REE · CONF 91%</div>
+      <div class="et">China Processing Capacity Audit</div>
+      <div class="ed">
+        <span class="ette">T-8d</span>
+        <span class="eimp high">HIGH</span>
+      </div>
+    </div>
+    <div class="ech med" onclick="showEventDetail(3)">
+      <div class="e-dismiss" onclick="dismissEvent(event,3)">✕</div>
+      <div class="em">Ni · CONF 65%</div>
+      <div class="et">Indonesia Ore Export Policy</div>
+      <div class="ed">
+        <span class="ette">T-19d</span>
+        <span class="eimp med">MED</span>
+      </div>
+    </div>
+    <div class="ech high" onclick="showEventDetail(4)">
+      <div class="e-dismiss" onclick="dismissEvent(event,4)">✕</div>
+      <div class="em">Cu · CONF 93%</div>
+      <div class="et">LME Inventory Draw Acceleration</div>
+      <div class="ed">
+        <span class="ette">T-2d</span>
+        <span class="eimp high">HIGH</span>
+      </div>
+    </div>
+    <div class="ech med" onclick="showEventDetail(5)">
+      <div class="e-dismiss" onclick="dismissEvent(event,5)">✕</div>
+      <div class="em">W · CONF 71%</div>
+      <div class="et">EU Defense Procurement Tender</div>
+      <div class="ed">
+        <span class="ette">T-26d</span>
+        <span class="eimp med">MED</span>
+      </div>
+    </div>
+    <div class="ech high" onclick="showEventDetail(6)">
+      <div class="e-dismiss" onclick="dismissEvent(event,6)">✕</div>
+      <div class="em">Ag · CONF 88%</div>
+      <div class="et">COMEX Silver Delivery Squeeze</div>
+      <div class="ed">
+        <span class="ette">T-3d</span>
+        <span class="eimp high">HIGH</span>
+      </div>
+    </div>
+    <div class="ech med" onclick="showEventDetail(7)">
+      <div class="e-dismiss" onclick="dismissEvent(event,7)">✕</div>
+      <div class="em">Au · CONF 76%</div>
+      <div class="et">Fed Rate Decision Impact Model</div>
+      <div class="ed">
+        <span class="ette">T-6d</span>
+        <span class="eimp med">MED</span>
+      </div>
+    </div>
+    <div class="ech med" onclick="showEventDetail(8)">
+      <div class="e-dismiss" onclick="dismissEvent(event,8)">✕</div>
+      <div class="em">Co · CONF 82%</div>
+      <div class="et">CMOC Q2 Production Update</div>
+      <div class="ed">
+        <span class="ette">T-6d</span>
+        <span class="eimp med">MED</span>
+      </div>
+    </div>
+    <div class="ech high" onclick="showEventDetail(9)">
+      <div class="e-dismiss" onclick="dismissEvent(event,9)">✕</div>
+      <div class="em">REE · CONF 58%</div>
+      <div class="et">US-China Trade Tariff Review</div>
+      <div class="ed">
+        <span class="ette">T-31d</span>
+        <span class="eimp high">HIGH</span>
+      </div>
+    </div></div>
+    <div id="lirow" class="p">
+      <div class="ph">
+        <span class="pt">LEADING INDICATORS — BY SIGNAL LEAD TIME</span>
+        <span class="pm" id="li-sort-btn" style="cursor:pointer;color:var(--gold);user-select:none" onclick="toggleLeadingSort()">SORT: LEAD ↕</span>
+      </div>
+      <div id="lilist">
+    <div class="li" onclick="showLeadingDetail(&#39;Energy Input Cost Index&#39;,5,44,&#39;bear&#39;)">
+      <div class="li-n">01</div>
+      <div class="li-name">Energy Input Cost Index</div>
+      <div class="li-lead">+5d</div>
+      <div class="li-bar"><div class="li-bar-bg"><div class="li-bar-f" style="width:44%;background:var(--gold)"></div></div></div>
+      <div class="li-d" style="color:var(--red)">▼</div>
+    </div>
+    <div class="li" onclick="showLeadingDetail(&#39;Freight Rate Forward Curve&#39;,7,65,&#39;bear&#39;)">
+      <div class="li-n">02</div>
+      <div class="li-name">Freight Rate Forward Curve</div>
+      <div class="li-lead">+7d</div>
+      <div class="li-bar"><div class="li-bar-bg"><div class="li-bar-f" style="width:65%;background:var(--gold)"></div></div></div>
+      <div class="li-d" style="color:var(--red)">▼</div>
+    </div>
+    <div class="li" onclick="showLeadingDetail(&#39;COMEX Silver Open Interest&#39;,9,73,&#39;bull&#39;)">
+      <div class="li-n">03</div>
+      <div class="li-name">COMEX Silver Open Interest</div>
+      <div class="li-lead">+9d</div>
+      <div class="li-bar"><div class="li-bar-bg"><div class="li-bar-f" style="width:73%;background:var(--green)"></div></div></div>
+      <div class="li-d" style="color:var(--green)">▲</div>
+    </div>
+    <div class="li" onclick="showLeadingDetail(&#39;Manufacturing PMI Composite&#39;,9,55,&#39;bull&#39;)">
+      <div class="li-n">04</div>
+      <div class="li-name">Manufacturing PMI Composite</div>
+      <div class="li-lead">+9d</div>
+      <div class="li-bar"><div class="li-bar-bg"><div class="li-bar-f" style="width:55%;background:var(--gold)"></div></div></div>
+      <div class="li-d" style="color:var(--green)">▲</div>
+    </div>
+    <div class="li" onclick="showLeadingDetail(&#39;Smelter Utilization Rate&#39;,11,71,&#39;bull&#39;)">
+      <div class="li-n">05</div>
+      <div class="li-name">Smelter Utilization Rate</div>
+      <div class="li-lead">+11d</div>
+      <div class="li-bar"><div class="li-bar-bg"><div class="li-bar-f" style="width:71%;background:var(--green)"></div></div></div>
+      <div class="li-d" style="color:var(--green)">▲</div>
+    </div>
+    <div class="li" onclick="showLeadingDetail(&#39;CFTC Gold Net Positioning&#39;,12,57,&#39;bull&#39;)">
+      <div class="li-n">06</div>
+      <div class="li-name">CFTC Gold Net Positioning</div>
+      <div class="li-lead">+12d</div>
+      <div class="li-bar"><div class="li-bar-bg"><div class="li-bar-f" style="width:57%;background:var(--gold)"></div></div></div>
+      <div class="li-d" style="color:var(--green)">▲</div>
+    </div>
+    <div class="li" onclick="showLeadingDetail(&#39;LME Inventory Drawdown Rate&#39;,14,88,&#39;bull&#39;)">
+      <div class="li-n">07</div>
+      <div class="li-name">LME Inventory Drawdown Rate</div>
+      <div class="li-lead">+14d</div>
+      <div class="li-bar"><div class="li-bar-bg"><div class="li-bar-f" style="width:88%;background:var(--green)"></div></div></div>
+      <div class="li-d" style="color:var(--green)">▲</div>
+    </div>
+    <div class="li" onclick="showLeadingDetail(&#39;Concentrate Availability Index&#39;,18,76,&#39;bull&#39;)">
+      <div class="li-n">08</div>
+      <div class="li-name">Concentrate Availability Index</div>
+      <div class="li-lead">+18d</div>
+      <div class="li-bar"><div class="li-bar-bg"><div class="li-bar-f" style="width:76%;background:var(--green)"></div></div></div>
+      <div class="li-d" style="color:var(--green)">▲</div>
+    </div>
+    <div class="li" onclick="showLeadingDetail(&#39;TC/RC Spread Compression&#39;,21,82,&#39;bull&#39;)">
+      <div class="li-n">09</div>
+      <div class="li-name">TC/RC Spread Compression</div>
+      <div class="li-lead">+21d</div>
+      <div class="li-bar"><div class="li-bar-bg"><div class="li-bar-f" style="width:82%;background:var(--green)"></div></div></div>
+      <div class="li-d" style="color:var(--green)">▲</div>
+    </div>
+    <div class="li" onclick="showLeadingDetail(&#39;Export License Application Rate&#39;,28,60,&#39;bull&#39;)">
+      <div class="li-n">10</div>
+      <div class="li-name">Export License Application Rate</div>
+      <div class="li-lead">+28d</div>
+      <div class="li-bar"><div class="li-bar-bg"><div class="li-bar-f" style="width:60%;background:var(--gold)"></div></div></div>
+      <div class="li-d" style="color:var(--green)">▲</div>
+    </div></div>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div id="right">
+    <div id="deploy" class="p">
+      <div class="ph"><span class="pt">CAPITAL DEPLOYMENT</span><span class="pm">RECOMMENDED</span></div>
+      <div id="deploy-list">
+    <div class="di">
+      <div class="di-sym">Cu</div>
+      <div class="di-wrap">
+        <div class="di-name">Copper</div>
+        <div class="di-bar" onclick="showDeployDetail(&#39;Cu&#39;)" title="Click for details">
+          <div class="di-f" style="width:26%;background:var(--green)"></div>
+        </div>
+      </div>
+      <div class="di-pct" style="color:var(--green)">26%</div>
+    </div>
+    <div class="di">
+      <div class="di-sym">Co</div>
+      <div class="di-wrap">
+        <div class="di-name">Cobalt</div>
+        <div class="di-bar" onclick="showDeployDetail(&#39;Co&#39;)" title="Click for details">
+          <div class="di-f" style="width:20%;background:var(--green)"></div>
+        </div>
+      </div>
+      <div class="di-pct" style="color:var(--green)">20%</div>
+    </div>
+    <div class="di">
+      <div class="di-sym">Ni</div>
+      <div class="di-wrap">
+        <div class="di-name">Nickel</div>
+        <div class="di-bar" onclick="showDeployDetail(&#39;Ni&#39;)" title="Click for details">
+          <div class="di-f" style="width:12%;background:var(--gold)"></div>
+        </div>
+      </div>
+      <div class="di-pct" style="color:var(--gold)">12%</div>
+    </div>
+    <div class="di">
+      <div class="di-sym">W</div>
+      <div class="di-wrap">
+        <div class="di-name">Tungsten</div>
+        <div class="di-bar" onclick="showDeployDetail(&#39;W&#39;)" title="Click for details">
+          <div class="di-f" style="width:9%;background:var(--gold)"></div>
+        </div>
+      </div>
+      <div class="di-pct" style="color:var(--gold)">9%</div>
+    </div>
+    <div class="di">
+      <div class="di-sym">REE</div>
+      <div class="di-wrap">
+        <div class="di-name">Rare Earths</div>
+        <div class="di-bar" onclick="showDeployDetail(&#39;REE&#39;)" title="Click for details">
+          <div class="di-f" style="width:8%;background:var(--green)"></div>
+        </div>
+      </div>
+      <div class="di-pct" style="color:var(--green)">8%</div>
+    </div>
+    <div class="di">
+      <div class="di-sym">Ag</div>
+      <div class="di-wrap">
+        <div class="di-name">Silver</div>
+        <div class="di-bar" onclick="showDeployDetail(&#39;Ag&#39;)" title="Click for details">
+          <div class="di-f" style="width:14%;background:var(--green)"></div>
+        </div>
+      </div>
+      <div class="di-pct" style="color:var(--green)">14%</div>
+    </div>
+    <div class="di">
+      <div class="di-sym">Au</div>
+      <div class="di-wrap">
+        <div class="di-name">Gold</div>
+        <div class="di-bar" onclick="showDeployDetail(&#39;Au&#39;)" title="Click for details">
+          <div class="di-f" style="width:11%;background:var(--gold)"></div>
+        </div>
+      </div>
+      <div class="di-pct" style="color:var(--gold)">11%</div>
+    </div></div>
+      <div class="recbox">
+        <div class="rech"><span>ACTIVE RECOMMENDATIONS</span><span id="rec-ts">17:38</span></div>
+        <div class="reci" onclick="actRec(this)">Cu long +8%: tightness breakout in progress</div>
+        <div class="reci" onclick="actRec(this)">Co logistics: enter spread vs Ni, T-11d event</div>
+        <div class="reci" onclick="actRec(this)">Ag physical squeeze forming, pre-position 4%</div>
+        <div class="reci" onclick="actRec(this)">Au: policy hedge active, reduce risk-off allocation</div>
+        <div class="reci" onclick="actRec(this)">REE policy event T-8d: pre-position 3–5%</div>
+      </div>
+    </div>
+    <div id="backtest" class="p">
+      <div class="ph"><span class="pt">BACKTEST — LIVE PERFORMANCE</span><span class="pm" style="color:var(--green)">RUNNING</span></div>
+      <div id="bt-stats">
+    <div class="btr" onclick="showBtDetail(&#39;Win Rate (90d)&#39;,&#39;67.3%&#39;)">
+      <span class="btl">Win Rate (90d)</span><span class="btv p">67.3%</span>
+    </div>
+    <div class="btr" onclick="showBtDetail(&#39;Avg Return/Signal&#39;,&#39;+2.4%&#39;)">
+      <span class="btl">Avg Return/Signal</span><span class="btv p">+2.4%</span>
+    </div>
+    <div class="btr" onclick="showBtDetail(&#39;Max Drawdown&#39;,&#39;-4.1%&#39;)">
+      <span class="btl">Max Drawdown</span><span class="btv n">-4.1%</span>
+    </div>
+    <div class="btr" onclick="showBtDetail(&#39;Sharpe (ann.)&#39;,&#39;2.18&#39;)">
+      <span class="btl">Sharpe (ann.)</span><span class="btv p">2.18</span>
+    </div>
+    <div class="btr" onclick="showBtDetail(&#39;Signal Decay&#39;,&#39;18d avg&#39;)">
+      <span class="btl">Signal Decay</span><span class="btv t">18d avg</span>
+    </div>
+    <div class="btr" onclick="showBtDetail(&#39;False Positive&#39;,&#39;11.2%&#39;)">
+      <span class="btl">False Positive</span><span class="btv t">11.2%</span>
+    </div>
+    <div class="btr" onclick="showBtDetail(&#39;Backtest Cycles&#39;,&#39;847&#39;)">
+      <span class="btl">Backtest Cycles</span><span class="btv t">847</span>
+    </div></div>
+      <canvas id="bt-chart" width="222" height="52"></canvas>
+    </div>
+    <div id="confidence" class="p">
+      <div class="ph"><span class="pt">MODEL CONFIDENCE</span><span class="pm" id="conf-ts">17:39:01</span></div>
+      <div class="crw">
+        <canvas id="cring" width="58" height="58" style="flex-shrink:0;cursor:pointer" onclick="showModelDetail()"></canvas>
+        <div>
+          <div style="font-family:var(--mono);font-size:7px;color:var(--dim);margin-bottom:2px">COMPOSITE CONFIDENCE</div>
+          <div style="font-family:var(--mono);font-size:14px;font-weight:600;color:var(--green)" id="conf-val">74%</div>
+          <div style="font-family:var(--mono);font-size:7px;color:var(--dim);margin-top:1px" id="bt-cycles">862 backtest cycles</div>
+        </div>
+      </div>
+      <div class="mstats" id="mstats">
+    <div class="mstat" onclick="showModelDetail()">
+      <div class="mstat-l">RULES ENGINE</div>
+      <div class="mstat-v" style="color:var(--green)">ACTIVE</div>
+    </div>
+    <div class="mstat" onclick="showModelDetail()">
+      <div class="mstat-l">ML MODEL</div>
+      <div class="mstat-v" style="color:var(--gold3)">v2.4.1</div>
+    </div>
+    <div class="mstat" onclick="showModelDetail()">
+      <div class="mstat-l">Z-SCORE</div>
+      <div class="mstat-v" style="color:var(--green)">+2.1σ</div>
+    </div>
+    <div class="mstat" onclick="showModelDetail()">
+      <div class="mstat-l">DATA LAG</div>
+      <div class="mstat-v" style="color:var(--gold)">47s</div>
+    </div></div>
+    </div>
+    <div id="second" class="p">
+      <div class="ph"><span class="pt">2ND-DEGREE FACTORS</span><span class="pm">INDIRECT SIGNALS</span></div>
+      <div id="solist">
+    <div class="soi" onclick="showSecondDetail(0)">
+      <div class="sodot neg"></div>
+      <div style="flex:1">
+        <div class="sotitle">USD Index Strength</div>
+        <div class="sodesc">DXY strength suppresses $ metals. Corr: -0.62</div>
+        <div class="soiact neg">IMPACT: -2.1 pts</div>
+      </div>
+    </div>
+    <div class="soi" onclick="showSecondDetail(1)">
+      <div class="sodot neg"></div>
+      <div style="flex:1">
+        <div class="sotitle">Energy Cost Trajectory</div>
+        <div class="sodesc">EU power +18% MoM — smelting margin compression</div>
+        <div class="soiact neg">IMPACT: -1.8 pts</div>
+      </div>
+    </div>
+    <div class="soi" onclick="showSecondDetail(2)">
+      <div class="sodot pos"></div>
+      <div style="flex:1">
+        <div class="sotitle">EV Penetration Rate</div>
+        <div class="sodesc">Global EV share 28.4% — 90d ahead of consensus</div>
+        <div class="soiact pos">IMPACT: +3.4 pts</div>
+      </div>
+    </div>
+    <div class="soi" onclick="showSecondDetail(3)">
+      <div class="sodot pos"></div>
+      <div style="flex:1">
+        <div class="sotitle">China PMI Manufacturing</div>
+        <div class="sodesc">54.1 vs 52.0 est. — expanded demand for Cu/Ni</div>
+        <div class="soiact pos">IMPACT: +2.8 pts</div>
+      </div>
+    </div>
+    <div class="soi" onclick="showSecondDetail(4)">
+      <div class="sodot neg"></div>
+      <div style="flex:1">
+        <div class="sotitle">Shipping Insurance Rates</div>
+        <div class="sodesc">Red Sea routing +12–18d — logistics amplifier</div>
+        <div class="soiact neg">IMPACT: -1.3 pts</div>
+      </div>
+    </div>
+    <div class="soi" onclick="showSecondDetail(5)">
+      <div class="sodot pos"></div>
+      <div style="flex:1">
+        <div class="sotitle">Sovereign Fund Flows</div>
+        <div class="sodesc">GCC SWF rotating to physical metals. Demand floor ↑</div>
+        <div class="soiact pos">IMPACT: +1.9 pts</div>
+      </div>
+    </div>
+    <div class="soi" onclick="showSecondDetail(6)">
+      <div class="sodot pos"></div>
+      <div style="flex:1">
+        <div class="sotitle">Real Rates (US 10Y TIPS)</div>
+        <div class="sodesc">-0.4% real yield supports gold &amp; silver positioning</div>
+        <div class="soiact pos">IMPACT: +2.2 pts</div>
+      </div>
+    </div>
+    <div class="soi" onclick="showSecondDetail(7)">
+      <div class="sodot pos"></div>
+      <div style="flex:1">
+        <div class="sotitle">Dollar-Gold Correlation</div>
+        <div class="sodesc">60d rolling corr Au/DXY: -0.78. DXY softening = bull Au</div>
+        <div class="soiact pos">IMPACT: +1.6 pts</div>
+      </div>
+    </div></div>
+    </div>
+    <div id="feedback" class="p">
+      <div class="ph"><span class="pt">FEEDBACK LOOPS</span><span class="pm" id="fb-ts">17:39:01</span></div>
+      <div id="fblist">
+    <div class="fbl">
+      <div class="fbn" onclick="showFeedbackDetail(0)" title="Click for detail">
+        <div class="fbn-t">SOURCE</div><div class="fbn-v">Inventory Draw</div>
+      </div>
+      <div class="fbarr">→</div>
+      <div class="fbn" onclick="showFeedbackDetail(0)" title="Click for detail">
+        <div class="fbn-t">EFFECT</div><div class="fbn-v">Backwardation</div>
+      </div>
+    </div>
+    <div class="fbnote">↳ +0.4σ/wk</div>
+    <div class="fbl">
+      <div class="fbn" onclick="showFeedbackDetail(1)" title="Click for detail">
+        <div class="fbn-t">SOURCE</div><div class="fbn-v">Strike Risk</div>
+      </div>
+      <div class="fbarr">→</div>
+      <div class="fbn" onclick="showFeedbackDetail(1)" title="Click for detail">
+        <div class="fbn-t">EFFECT</div><div class="fbn-v">Supply Premium</div>
+      </div>
+    </div>
+    <div class="fbnote">↳ +$210/t embedded</div>
+    <div class="fbl">
+      <div class="fbn" onclick="showFeedbackDetail(2)" title="Click for detail">
+        <div class="fbn-t">SOURCE</div><div class="fbn-v">Policy Signal</div>
+      </div>
+      <div class="fbarr">→</div>
+      <div class="fbn" onclick="showFeedbackDetail(2)" title="Click for detail">
+        <div class="fbn-t">EFFECT</div><div class="fbn-v">Trade Flow Shift</div>
+      </div>
+    </div>
+    <div class="fbnote">↳ Detection lag: 8d</div>
+    <div class="fbl">
+      <div class="fbn" onclick="showFeedbackDetail(3)" title="Click for detail">
+        <div class="fbn-t">SOURCE</div><div class="fbn-v">Ag COMEX Draw</div>
+      </div>
+      <div class="fbarr">→</div>
+      <div class="fbn" onclick="showFeedbackDetail(3)" title="Click for detail">
+        <div class="fbn-t">EFFECT</div><div class="fbn-v">Spot Premium</div>
+      </div>
+    </div>
+    <div class="fbnote">↳ +$0.42/oz over futures</div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div id="modal-overlay" onclick="closeModal(event)">
+  <div id="modal">
+    <button id="modal-close" onclick="closeModal()">✕</button>
+    <div id="modal-title"></div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<!-- TOASTS -->
+<div id="toasts"></div>
+
+<!-- ALERT PANEL -->
+<div id="alert-panel">
+  <div class="alabel">⚑ ALERT THRESHOLDS</div>
+  <div id="alert-rows"></div>
+  <div style="margin-top:8px;display:flex;gap:6px">
+    <button class="tbtn" style="font-size:8px" onclick="saveAlerts()">SAVE</button>
+    <button class="tbtn danger" style="font-size:8px" onclick="clearAlerts()">CLEAR ALL</button>
+  </div>
+</div>
+
+<!-- SEARCH -->
+<div id="search-wrap">
+  <input id="search-input" type="text" placeholder="Search minerals, signals, events..." autocomplete="off">
+  <div id="search-results"></div>
+</div>
+
+<!-- COMPARE BAR -->
+<div id="compare-bar">
+  <span style="color:var(--gold);font-size:8px;white-space:nowrap">COMPARE MODE:</span>
+  <div id="compare-items" style="display:flex;gap:5px;flex:1"></div>
+  <button class="tbtn danger" style="font-size:8px" onclick="clearCompare()">CLEAR</button>
+  <button class="tbtn" style="font-size:8px" onclick="showComparison()">ANALYZE ▸</button>
+</div>
+
+<script>
+// ═══════════════════════════════ DATA ═══════════════════════════════
+const MINERALS = [
+  { id:'Cu',  name:'Copper',      sym:'LME/CU',  price:9420,  pct:+1.8,  score:78, dir:'bull', signals:[82,65,70,88,79], deploy:26 },
+  { id:'Co',  name:'Cobalt',      sym:'LME/CO',  price:33800, pct:+2.4,  score:85, dir:'bull', signals:[90,88,72,65,85], deploy:20 },
+  { id:'Ni',  name:'Nickel',      sym:'LME/NI',  price:16250, pct:-0.6,  score:42, dir:'neut', signals:[38,50,42,55,40], deploy:12 },
+  { id:'W',   name:'Tungsten',    sym:'APT/W',   price:295,   pct:+0.9,  score:67, dir:'bull', signals:[70,55,80,60,68], deploy:9  },
+  { id:'REE', name:'Rare Earths', sym:'SMM/RE',  price:142,   pct:+3.1,  score:91, dir:'bull', signals:[88,78,95,85,92], deploy:8  },
+  { id:'Ag',  name:'Silver',      sym:'COMEX/SI',price:31.42, pct:+1.4,  score:74, dir:'bull', signals:[78,60,72,80,74], deploy:14 },
+  { id:'Au',  name:'Gold',        sym:'COMEX/GC',price:2348,  pct:+0.7,  score:62, dir:'neut', signals:[55,48,68,70,62], deploy:11 },
+];
+const SIG_NAMES = ['PHYSICAL\nTIGHTNESS','LOGISTICS\nDISRUPTION','POLICY\nRISK','DEMAND\nNOWCAST','COMPOSITE\nSIGNAL'];
+const SIG_DETAIL = [
+  { desc:'Physical market tightness score derived from LME stock levels, warrant cancellations, and smelter utilization.', metrics:[['LME Stock Change','–4.2%'],['Warrant Cancel Rate','12.3%'],['Smelter Util.','91.4%']] },
+  { desc:'Logistics disruption index: freight delays, port congestion, and vessel availability impacting supply chains.', metrics:[['Port Delay Avg','+3.1d'],['Vessel Backlog','×2.4'],['Rail Disruption','Partial']] },
+  { desc:'Policy risk composite: export quotas, labor action probability, and regulatory change signals.', metrics:[['Quota Review','Active'],['Strike Probability','38%'],['Permit Status','Freeze CN']] },
+  { desc:'Demand nowcast integrating manufacturing PMI, EV production data, and grid infrastructure spend.', metrics:[['EV Production','+8.2% YoY'],['PMI Composite','54.1'],['Grid Capex','$4.2B']] },
+  { desc:'Composite rules-engine signal: z-score threshold cross with ML gradient confirmation.', metrics:[['Z-Score','+2.1σ'],['ML Gradient','p=0.83'],['Rules Engine','BULL']] },
+];
+const SIG_DESCS = [
+  ['LME stocks -4.2%','Warehouse queues ↑','Smelter outage: DRC'],
+  ['Port delay: +3.1d','Vessel backlog x2.4','Rail: Zambia partial'],
+  ['Export quota review','Labor unrest: Escondida','Permit freeze: CN'],
+  ['EV prod. +8.2% YoY','PMI: 54.1 (exp 52)','Grid tender +$4.2B'],
+  ['Rules engine: BULL','Z-score: +2.1σ','Gradient: p=0.83'],
+];
+const EVENTS = [
+  { m:'Cu',  t:'Escondida Strike Auth. Vote',      tte:'T-4d',  imp:'high', c:87 },
+  { m:'Co',  t:'DRC Export Quota Announcement',    tte:'T-11d', imp:'high', c:79 },
+  { m:'REE', t:'China Processing Capacity Audit',  tte:'T-8d',  imp:'high', c:91 },
+  { m:'Ni',  t:'Indonesia Ore Export Policy',      tte:'T-19d', imp:'med',  c:65 },
+  { m:'Cu',  t:'LME Inventory Draw Acceleration',  tte:'T-2d',  imp:'high', c:93 },
+  { m:'W',   t:'EU Defense Procurement Tender',    tte:'T-26d', imp:'med',  c:71 },
+  { m:'Ag',  t:'COMEX Silver Delivery Squeeze',    tte:'T-3d',  imp:'high', c:88 },
+  { m:'Au',  t:'Fed Rate Decision Impact Model',   tte:'T-6d',  imp:'med',  c:76 },
+  { m:'Co',  t:'CMOC Q2 Production Update',        tte:'T-6d',  imp:'med',  c:82 },
+  { m:'REE', t:'US-China Trade Tariff Review',     tte:'T-31d', imp:'high', c:58 },
+];
+const SECOND_ORDER = [
+  { t:'USD Index Strength',       d:'DXY strength suppresses $ metals. Corr: -0.62', dir:'neg', i:'-2.1 pts' },
+  { t:'Energy Cost Trajectory',   d:'EU power +18% MoM — smelting margin compression', dir:'neg', i:'-1.8 pts' },
+  { t:'EV Penetration Rate',      d:'Global EV share 28.4% — 90d ahead of consensus', dir:'pos', i:'+3.4 pts' },
+  { t:'China PMI Manufacturing',  d:'54.1 vs 52.0 est. — expanded demand for Cu/Ni', dir:'pos', i:'+2.8 pts' },
+  { t:'Shipping Insurance Rates', d:'Red Sea routing +12–18d — logistics amplifier', dir:'neg', i:'-1.3 pts' },
+  { t:'Sovereign Fund Flows',     d:'GCC SWF rotating to physical metals. Demand floor ↑', dir:'pos', i:'+1.9 pts' },
+  { t:'Real Rates (US 10Y TIPS)', d:'-0.4% real yield supports gold & silver positioning', dir:'pos', i:'+2.2 pts' },
+  { t:'Dollar-Gold Correlation',  d:'60d rolling corr Au/DXY: -0.78. DXY softening = bull Au', dir:'pos', i:'+1.6 pts' },
+];
+const FEEDBACK = [
+  { a:'Inventory Draw', b:'Backwardation',    n:'+0.4σ/wk' },
+  { a:'Strike Risk',    b:'Supply Premium',   n:'+$210/t embedded' },
+  { a:'Policy Signal',  b:'Trade Flow Shift', n:'Detection lag: 8d' },
+  { a:'Ag COMEX Draw',  b:'Spot Premium',     n:'+$0.42/oz over futures' },
+];
+const LEADING = [
+  { n:'LME Inventory Drawdown Rate',    l:14, s:88, dir:'bull' },
+  { n:'TC/RC Spread Compression',       l:21, s:82, dir:'bull' },
+  { n:'Concentrate Availability Index', l:18, s:76, dir:'bull' },
+  { n:'COMEX Silver Open Interest',     l:9,  s:73, dir:'bull' },
+  { n:'Smelter Utilization Rate',       l:11, s:71, dir:'bull' },
+  { n:'Freight Rate Forward Curve',     l:7,  s:65, dir:'bear' },
+  { n:'Export License Application Rate',l:28, s:60, dir:'bull' },
+  { n:'CFTC Gold Net Positioning',      l:12, s:57, dir:'bull' },
+  { n:'Manufacturing PMI Composite',    l:9,  s:55, dir:'bull' },
+  { n:'Energy Input Cost Index',        l:5,  s:44, dir:'bear' },
+];
+const BT_STATS = [
+  { l:'Win Rate (90d)',     v:'67.3%', c:'p' },
+  { l:'Avg Return/Signal', v:'+2.4%', c:'p' },
+  { l:'Max Drawdown',      v:'-4.1%', c:'n' },
+  { l:'Sharpe (ann.)',     v:'2.18',  c:'p' },
+  { l:'Signal Decay',      v:'18d avg',c:'t'},
+  { l:'False Positive',    v:'11.2%', c:'t' },
+  { l:'Backtest Cycles',   v:'847',   c:'t' },
+];
+
+// ═══════════════════════════════ STATE ══════════════════════════════
+let activeM = 0;
+let chartR = '1D';
+let cycles = 0;
+let paused = false;
+let compareMode = false;
+let compareList = [];
+let alertsOpen = false;
+let alertFired = 0;
+let dismissedCount = 0;
+let leadingSortMode = 'lead'; // 'lead' | 'score'
+let alertThresholds = { Cu:80, Co:80, Ni:40, W:70, REE:85, Ag:75, Au:60 };
+let alertEnabled = { Cu:true, Co:true, Ni:true, W:true, REE:true, Ag:true, Au:true };
+let alertFiredMap = {};
+let priceH = {};
+let btH = Array.from({length:50},(_,i)=>42+Math.sin(i*.35)*10+Math.random()*4);
+let dismissedEvents = new Set();
+let expandedSig = -1;
+let totalBtCycles = 847;
+
+MINERALS.forEach(m=>{
+  let arr=[], v=m.price*.97;
+  for(let i=0;i<120;i++){ v*=(1+(Math.random()-.48)*.003); arr.push(+v.toFixed(m.price<100?2:m.price<1000?1:0)); }
+  priceH[m.id]=arr;
+});
+
+// ═══════════════════════════════ UTILS ══════════════════════════════
+const dc = d => d==='bull'?'bull':d==='bear'?'bear':'neut';
+const dl = d => d==='bull'?'▲ BULL':d==='bear'?'▼ BEAR':'◆ NEUT';
+const sc = s => s>=68?'var(--green)':s>=42?'var(--gold)':'var(--red)';
+const nowt = ()=>new Date().toLocaleTimeString('en-GB',{hour12:false});
+const nowhm = ()=>new Date().toLocaleTimeString('en-GB',{hour12:false,hour:'2-digit',minute:'2-digit'});
+
+// ═══════════════════════════════ TOASTS ═════════════════════════════
+function toast(title, msg, type='info'){
+  const t=document.createElement('div');
+  t.className=`toast ${type}`;
+  t.innerHTML=`<div class="toast-t">${title}</div>${msg}`;
+  document.getElementById('toasts').appendChild(t);
+  setTimeout(()=>t.style.opacity='0',3500);
+  setTimeout(()=>t.remove(),4000);
+}
+
+// ═══════════════════════════════ TABS ═══════════════════════════════
+function buildTabs(){
+  document.getElementById('mtabs').innerHTML =
+    MINERALS.map((m,i)=>`<button class="mtab ${i===activeM?'on':''}" data-i="${i}">${m.id}</button>`).join('');
+}
+
+// ═══════════════════════════════ LEFT ═══════════════════════════════
+function renderLeft(){
+  document.getElementById('left').innerHTML =
+    MINERALS.map((m,i)=>{
+      const alertActive = m.score >= alertThresholds[m.id] && alertEnabled[m.id] && m.dir==='bull';
+      return `<div class="mcard ${i===activeM?'on':''}" onclick="sel(${i},event)" data-mid="${m.id}">
+        <div class="mcard-alert ${alertActive?'show':''}"></div>
+        <div class="mc-row1">
+          <div><div class="mc-name">${m.name}</div><span class="mc-sym">${m.sym}</span></div>
+          <div><div class="mc-score ${dc(m.dir)}">${m.score}</div><div class="mc-slabel">/100</div></div>
+        </div>
+        <div class="sbars">${m.signals.map(s=>`
+          <div class="sbar"><div class="sbar-f ${s>=68?'bull':s>=42?'neut':'bear'}" style="width:${s}%"></div></div>`).join('')}
+        </div>
+        <div class="mc-row3">
+          <div class="mcs">$<b>${m.price.toLocaleString()}</b></div>
+          <div class="mcs" style="color:${m.pct>=0?'var(--green)':'var(--red)'}">${m.pct>=0?'+':''}${m.pct}%</div>
+          <div class="mcs">D:<b>${m.deploy}%</b></div>
+        </div>
+      </div>`;
+    }).join('');
+}
+
+// ═══════════════════════════════ COMPOSITE STRIP ═════════════════════
+function renderStrip(){
+  const m = MINERALS[activeM];
+  const cells = [
+    { l:'COMPOSITE SCORE', v:m.score, vc:dc(m.dir), sub:dl(m.dir), sc:m.dir==='bull'?'up':m.dir==='bear'?'dn':'nt',
+      tip:`Score: ${m.score}/100 · Trend: ${m.dir.toUpperCase()} · 5-signal composite` },
+    { l:'PRICE', v:'$'+m.price.toLocaleString(), vc:'g', sub:(m.pct>=0?'+':'')+m.pct+'% 24H', sc:m.pct>=0?'up':'dn',
+      tip:`Live: $${m.price.toLocaleString()} · Change: ${m.pct>=0?'+':''}${m.pct}% · Symbol: ${m.sym}` },
+    { l:'SIGNAL COUNT', v:'47', vc:'g', sub:'12 new today', sc:'nt',
+      tip:'47 active signals · 12 new in last 24h · 3 critical threshold crosses' },
+    { l:'TIME TO EVENT', v:'T-2d', vc:'bull', sub:'LME Inventory Draw', sc:'nt',
+      tip:'Nearest event: LME Inventory Draw · T-2 days · Confidence: 93%' },
+    { l:'BACKTEST WIN', v:'67.3%', vc:'bull', sub:`${totalBtCycles} cycles`, sc:'up',
+      tip:`Win rate: 67.3% · Sharpe: 2.18 · Max DD: -4.1% · ${totalBtCycles} cycles` },
+    { l:'DEPLOY REC.', v:m.deploy+'%', vc:'g', sub:'of total allocation', sc:'nt',
+      tip:`Recommended: ${m.deploy}% · Risk-adjusted for current signal strength` },
+  ];
+  document.getElementById('cstrip').innerHTML = cells.map(c=>`
+    <div class="csc">
+      <div class="csl">${c.l}</div>
+      <div class="csv ${c.vc}">${c.v}</div>
+      <div class="csub ${c.sc}">${c.sub}</div>
+      <div class="csc-tooltip">${c.tip}</div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════ SIGNAL GRID ════════════════════════
+function renderSigs(){
+  const m = MINERALS[activeM];
+  document.getElementById('sigrow').innerHTML = m.signals.map((s,i)=>{
+    const cl = s>=68?'bull':s>=42?'neut':'bear';
+    const d = SIG_DESCS[i];
+    const isExpanded = expandedSig===i;
+    return `<div class="sc ${cl} ${isExpanded?'expanded':''}" onclick="toggleSig(${i})">
+      <div class="sc-name">${SIG_NAMES[i].replace('\n','<br>')}</div>
+      <div class="sc-val ${cl}">${s}</div>
+      <div class="sc-dir ${cl}">${dl(cl)}</div>
+      <div class="sc-bar"><div class="sc-bar-f ${cl}" style="width:${s}%"></div></div>
+      <div class="sc-sub">${d[0]}<br>${d[1]}<br><span style="color:var(--gold3)">${d[2]}</span></div>
+      <div class="sc-expand ${isExpanded?'show':''}">
+        ${SIG_DETAIL[i].metrics.map(([k,v])=>`<div class="sc-expand-item">${k}: <span>${v}</span></div>`).join('')}
+        <div style="font-family:var(--mono);font-size:7px;color:var(--dim);margin-top:3px;line-height:1.3">${SIG_DETAIL[i].desc}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleSig(i){
+  expandedSig = expandedSig===i ? -1 : i;
+  renderSigs();
+  if(expandedSig>=0){
+    const m=MINERALS[activeM];
+    showModal(`SIGNAL DETAIL — ${SIG_NAMES[i].replace('\n',' ')}`,
+      `<p style="font-size:8px;color:var(--dim);margin-bottom:8px">${SIG_DETAIL[i].desc}</p>` +
+      SIG_DETAIL[i].metrics.map(([k,v])=>`<div class="modal-row"><span class="modal-label">${k}</span><span class="modal-val bull">${v}</span></div>`).join('') +
+      `<div class="modal-row"><span class="modal-label">Current Score</span><span class="modal-val ${dc(m.dir)}">${m.signals[i]}/100</span></div>`
+    );
+  }
+}
+
+// ═══════════════════════════════ EVENTS ═════════════════════════════
+function renderEvents(){
+  const visible = EVENTS.filter((_,i)=>!dismissedEvents.has(i));
+  document.getElementById('ev-count').textContent = visible.length+' / '+EVENTS.length+' events';
+  document.getElementById('etape').innerHTML = EVENTS.map((e,idx)=>dismissedEvents.has(idx)?'': `
+    <div class="ech ${e.imp}" onclick="showEventDetail(${idx})">
+      <div class="e-dismiss" onclick="dismissEvent(event,${idx})">✕</div>
+      <div class="em">${e.m} · CONF ${e.c}%</div>
+      <div class="et">${e.t}</div>
+      <div class="ed">
+        <span class="ette">${e.tte}</span>
+        <span class="eimp ${e.imp}">${e.imp.toUpperCase()}</span>
+      </div>
+    </div>`).join('');
+}
+
+function dismissEvent(e, idx){
+  e.stopPropagation();
+  dismissedEvents.add(idx);
+  dismissedCount++;
+  document.getElementById('dismissed-count').textContent = dismissedCount;
+  renderEvents();
+  toast('EVENT DISMISSED', EVENTS[idx].t.substring(0,30)+'…', 'info');
+}
+
+function showEventDetail(idx){
+  const e=EVENTS[idx];
+  const m=MINERALS.find(x=>x.id===e.m)||{};
+  showModal(`EVENT — ${e.t}`, `
+    <div class="modal-row"><span class="modal-label">MINERAL</span><span class="modal-val">${e.m} — ${m.name||''}</span></div>
+    <div class="modal-row"><span class="modal-label">IMPACT</span><span class="modal-val ${e.imp==='high'?'bear':'neut'}">${e.imp.toUpperCase()}</span></div>
+    <div class="modal-row"><span class="modal-label">TIME TO REALIZATION</span><span class="modal-val">${e.tte}</span></div>
+    <div class="modal-row"><span class="modal-label">CONFIDENCE</span><span class="modal-val bull">${e.c}%</span></div>
+    <div class="modal-row"><span class="modal-label">CURRENT PRICE</span><span class="modal-val">$${(m.price||'N/A').toLocaleString()}</span></div>
+    <div class="modal-row"><span class="modal-label">SIGNAL SCORE</span><span class="modal-val bull">${m.score||'N/A'}/100</span></div>
+    <div style="margin-top:10px;padding:6px 8px;background:rgba(200,151,58,.07);border:1px solid rgba(200,151,58,.2);border-radius:2px;font-size:8px;color:var(--dim)">
+      Pre-position recommended before event window. Monitor for confirmation signals 48h prior.
+    </div>
+  `);
+}
+
+// ═══════════════════════════════ LEADING ════════════════════════════
+function toggleLeadingSort(){
+  leadingSortMode = leadingSortMode==='lead'?'score':'lead';
+  document.getElementById('li-sort-btn').textContent = `SORT: ${leadingSortMode==='lead'?'LEAD ↕':'SCORE ↕'}`;
+  renderLeading();
+}
+
+function renderLeading(){
+  let sorted = [...LEADING];
+  if(leadingSortMode==='score') sorted.sort((a,b)=>b.s-a.s);
+  else sorted.sort((a,b)=>a.l-b.l);
+  document.getElementById('lilist').innerHTML = sorted.map((l,i)=>`
+    <div class="li" onclick="showLeadingDetail('${l.n}',${l.l},${l.s},'${l.dir}')">
+      <div class="li-n">${String(i+1).padStart(2,'0')}</div>
+      <div class="li-name">${l.n}</div>
+      <div class="li-lead">+${l.l}d</div>
+      <div class="li-bar"><div class="li-bar-bg"><div class="li-bar-f" style="width:${l.s}%;background:${sc(l.s)}"></div></div></div>
+      <div class="li-d" style="color:${l.dir==='bull'?'var(--green)':'var(--red)'}">${l.dir==='bull'?'▲':'▼'}</div>
+    </div>`).join('');
+}
+
+function showLeadingDetail(name, lead, score, dir){
+  showModal(`LEADING INDICATOR — ${name.toUpperCase()}`, `
+    <div class="modal-row"><span class="modal-label">INDICATOR</span><span class="modal-val">${name}</span></div>
+    <div class="modal-row"><span class="modal-label">LEAD TIME</span><span class="modal-val bull">+${lead} days ahead</span></div>
+    <div class="modal-row"><span class="modal-label">CURRENT SCORE</span><span class="modal-val ${dir==='bull'?'bull':'bear'}">${score}/100</span></div>
+    <div class="modal-row"><span class="modal-label">DIRECTION</span><span class="modal-val ${dir==='bull'?'bull':'bear'}">${dir.toUpperCase()}</span></div>
+    <div class="modal-row"><span class="modal-label">SIGNAL CLASS</span><span class="modal-val">CONTINUOUS</span></div>
+    <div style="margin-top:8px;font-family:var(--mono);font-size:7px;color:var(--dim);line-height:1.5">
+      This indicator typically leads spot price by +${lead} days. Current reading of ${score}/100 suggests ${dir==='bull'?'upward':'downward'} pressure on future prices.
+    </div>
+  `);
+}
+
+// ═══════════════════════════════ DEPLOY ═════════════════════════════
+function renderDeploy(){
+  document.getElementById('rec-ts').textContent = nowhm();
+  document.getElementById('deploy-list').innerHTML = MINERALS.map(m=>`
+    <div class="di">
+      <div class="di-sym">${m.id}</div>
+      <div class="di-wrap">
+        <div class="di-name">${m.name}</div>
+        <div class="di-bar" onclick="showDeployDetail('${m.id}')" title="Click for details">
+          <div class="di-f" style="width:${m.deploy}%;background:${sc(m.score)}"></div>
+        </div>
+      </div>
+      <div class="di-pct" style="color:${sc(m.score)}">${m.deploy}%</div>
+    </div>`).join('');
+}
+
+function showDeployDetail(mid){
+  const m=MINERALS.find(x=>x.id===mid);
+  showModal(`DEPLOYMENT — ${m.name.toUpperCase()}`, `
+    <div class="modal-row"><span class="modal-label">RECOMMENDED ALLOCATION</span><span class="modal-val bull">${m.deploy}%</span></div>
+    <div class="modal-row"><span class="modal-label">CURRENT SCORE</span><span class="modal-val ${dc(m.dir)}">${m.score}/100</span></div>
+    <div class="modal-row"><span class="modal-label">PRICE</span><span class="modal-val">$${m.price.toLocaleString()}</span></div>
+    <div class="modal-row"><span class="modal-label">24H CHANGE</span><span class="modal-val ${m.pct>=0?'bull':'bear'}">${m.pct>=0?'+':''}${m.pct}%</span></div>
+    <div class="modal-row"><span class="modal-label">SIGNAL DIRECTION</span><span class="modal-val ${dc(m.dir)}">${m.dir.toUpperCase()}</span></div>
+    <div style="margin-top:8px;padding:6px 8px;background:rgba(46,204,138,.06);border:1px solid rgba(46,204,138,.2);border-radius:2px;font-size:8px;color:var(--text)">
+      Deployment of ${m.deploy}% reflects risk-adjusted signal strength of ${m.score}/100. Review quarterly.
+    </div>
+  `);
+}
+
+function actRec(el){
+  if(el.classList.contains('acted')) return;
+  el.classList.add('acted');
+  toast('RECOMMENDATION ACTED', el.textContent.substring(0,40)+'…', 'bull');
+}
+
+// ═══════════════════════════════ BACKTEST ═══════════════════════════
+function renderBacktest(){
+  document.getElementById('bt-stats').innerHTML = BT_STATS.map(b=>`
+    <div class="btr" onclick="showBtDetail('${b.l}','${b.v}')">
+      <span class="btl">${b.l}</span><span class="btv ${b.c}">${b.v}</span>
+    </div>`).join('');
+  drawBt();
+}
+
+function showBtDetail(label, val){
+  const desc = {
+    'Win Rate (90d)':'Percentage of signals producing positive returns over 90-day backtest window.',
+    'Avg Return/Signal':'Mean return per confirmed signal trigger over backtest period.',
+    'Max Drawdown':'Maximum peak-to-trough decline during backtest period.',
+    'Sharpe (ann.)':'Annualized risk-adjusted return. Above 2.0 indicates strong signal quality.',
+    'Signal Decay':'Average time for signal alpha to decay below statistical significance.',
+    'False Positive':'Rate of signals triggering without confirmed price follow-through.',
+    'Backtest Cycles':'Total independent simulation runs completed for statistical validation.',
+  };
+  showModal(`BACKTEST METRIC — ${label.toUpperCase()}`, `
+    <div class="modal-row"><span class="modal-label">METRIC</span><span class="modal-val">${label}</span></div>
+    <div class="modal-row"><span class="modal-label">VALUE</span><span class="modal-val bull">${val}</span></div>
+    <div style="margin-top:8px;font-size:8px;color:var(--dim);line-height:1.5">${desc[label]||'No description available.'}</div>
+  `);
+}
+
+function drawBt(){
+  const cv=document.getElementById('bt-chart'), ctx=cv.getContext('2d');
+  const W=cv.width, H=cv.height;
+  ctx.clearRect(0,0,W,H);
+  const d=btH, mn=Math.min(...d), mx=Math.max(...d), r=mx-mn||1;
+  const px=i=>(i/(d.length-1))*W;
+  const py=v=>H-((v-mn)/r)*(H-6)-3;
+  const g=ctx.createLinearGradient(0,0,0,H);
+  g.addColorStop(0,'rgba(46,204,138,.22)'); g.addColorStop(1,'rgba(46,204,138,.02)');
+  ctx.beginPath(); ctx.moveTo(px(0),H);
+  d.forEach((v,i)=>ctx.lineTo(px(i),py(v)));
+  ctx.lineTo(px(d.length-1),H); ctx.closePath(); ctx.fillStyle=g; ctx.fill();
+  ctx.beginPath();
+  d.forEach((v,i)=>i===0?ctx.moveTo(px(i),py(v)):ctx.lineTo(px(i),py(v)));
+  ctx.strokeStyle='#2ECC8A'; ctx.lineWidth=1.5; ctx.stroke();
+  const lp=d[d.length-1]; ctx.beginPath(); ctx.arc(px(d.length-1),py(lp),3,0,Math.PI*2);
+  ctx.fillStyle='#2ECC8A'; ctx.shadowBlur=6; ctx.shadowColor='#2ECC8A'; ctx.fill(); ctx.shadowBlur=0;
+}
+
+// ═══════════════════════════════ CONFIDENCE ═════════════════════════
+function drawRing(pct){
+  const cv=document.getElementById('cring'), ctx=cv.getContext('2d');
+  ctx.clearRect(0,0,58,58);
+  const cx=29,cy=29,r=22,lw=5;
+  ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2);
+  ctx.strokeStyle='rgba(58,106,150,.3)'; ctx.lineWidth=lw; ctx.stroke();
+  ctx.beginPath(); ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+(pct/100)*Math.PI*2);
+  ctx.strokeStyle='#2ECC8A'; ctx.lineWidth=lw; ctx.lineCap='round';
+  ctx.shadowBlur=7; ctx.shadowColor='#2ECC8A'; ctx.stroke(); ctx.shadowBlur=0;
+}
+
+function renderModel(){
+  document.getElementById('conf-ts').textContent = nowt();
+  const stats=[
+    {l:'RULES ENGINE',v:'ACTIVE',  c:'var(--green)'},
+    {l:'ML MODEL',    v:'v2.4.1',  c:'var(--gold3)'},
+    {l:'Z-SCORE',     v:'+2.1σ',   c:'var(--green)'},
+    {l:'DATA LAG',    v:'47s',     c:'var(--gold)'},
+  ];
+  document.getElementById('mstats').innerHTML = stats.map(s=>`
+    <div class="mstat" onclick="showModelDetail()">
+      <div class="mstat-l">${s.l}</div>
+      <div class="mstat-v" style="color:${s.c}">${s.v}</div>
+    </div>`).join('');
+}
+
+function showModelDetail(){
+  showModal('MODEL ARCHITECTURE — DMX AI v2.4.1', `
+    <div class="modal-row"><span class="modal-label">ENGINE TYPE</span><span class="modal-val">Rules + ML Hybrid</span></div>
+    <div class="modal-row"><span class="modal-label">MODEL VERSION</span><span class="modal-val">v2.4.1</span></div>
+    <div class="modal-row"><span class="modal-label">TRAINING DATA</span><span class="modal-val">2003–2025 (22yr)</span></div>
+    <div class="modal-row"><span class="modal-label">SIGNALS MONITORED</span><span class="modal-val bull">47 active</span></div>
+    <div class="modal-row"><span class="modal-label">COMPOSITE Z-SCORE</span><span class="modal-val bull">+2.1σ</span></div>
+    <div class="modal-row"><span class="modal-label">DATA LATENCY</span><span class="modal-val">47s avg</span></div>
+    <div class="modal-row"><span class="modal-label">BACKTEST CYCLES</span><span class="modal-val">${totalBtCycles}</span></div>
+    <div class="modal-row"><span class="modal-label">CONFIDENCE INTERVAL</span><span class="modal-val bull">95%</span></div>
+    <div style="margin-top:10px;font-size:8px;color:var(--dim);line-height:1.5">
+      Composite confidence derived from weighted average of 5 independent signal modules. 
+      High-confidence signals (>80%) trigger automated deployment recommendations.
+    </div>
+  `);
+}
+
+// ═══════════════════════════════ SECOND ORDER ═══════════════════════
+function renderSecond(){
+  document.getElementById('solist').innerHTML = SECOND_ORDER.map((s,i)=>`
+    <div class="soi" onclick="showSecondDetail(${i})">
+      <div class="sodot ${s.dir}"></div>
+      <div style="flex:1">
+        <div class="sotitle">${s.t}</div>
+        <div class="sodesc">${s.d}</div>
+        <div class="soiact ${s.dir}">IMPACT: ${s.i}</div>
+      </div>
+    </div>`).join('');
+}
+
+function showSecondDetail(i){
+  const s=SECOND_ORDER[i];
+  showModal(`2ND-DEGREE FACTOR — ${s.t.toUpperCase()}`, `
+    <div class="modal-row"><span class="modal-label">FACTOR</span><span class="modal-val">${s.t}</span></div>
+    <div class="modal-row"><span class="modal-label">DIRECTION</span><span class="modal-val ${s.dir==='pos'?'bull':'bear'}">${s.dir==='pos'?'POSITIVE':'NEGATIVE'}</span></div>
+    <div class="modal-row"><span class="modal-label">SCORE IMPACT</span><span class="modal-val ${s.dir==='pos'?'bull':'bear'}">${s.i}</span></div>
+    <div style="margin-top:8px;padding:6px;background:var(--navy);border-radius:2px;font-size:8px;color:var(--text);line-height:1.5">${s.d}</div>
+    <div style="margin-top:8px;font-size:7px;color:var(--dim)">Second-order factors are indirect signals that amplify or dampen primary signal readings. Weight: 0.15× composite score.</div>
+  `);
+}
+
+// ═══════════════════════════════ FEEDBACK ═══════════════════════════
+function renderFeedback(){
+  document.getElementById('fb-ts').textContent = nowt();
+  document.getElementById('fblist').innerHTML = FEEDBACK.map((f,i)=>`
+    <div class="fbl">
+      <div class="fbn" onclick="showFeedbackDetail(${i})" title="Click for detail">
+        <div class="fbn-t">SOURCE</div><div class="fbn-v">${f.a}</div>
+      </div>
+      <div class="fbarr">→</div>
+      <div class="fbn" onclick="showFeedbackDetail(${i})" title="Click for detail">
+        <div class="fbn-t">EFFECT</div><div class="fbn-v">${f.b}</div>
+      </div>
+    </div>
+    <div class="fbnote">↳ ${f.n}</div>`).join('');
+}
+
+function showFeedbackDetail(i){
+  const f=FEEDBACK[i];
+  showModal(`FEEDBACK LOOP — ${f.a.toUpperCase()} → ${f.b.toUpperCase()}`, `
+    <div class="modal-row"><span class="modal-label">SOURCE SIGNAL</span><span class="modal-val">${f.a}</span></div>
+    <div class="modal-row"><span class="modal-label">EFFECT</span><span class="modal-val bull">${f.b}</span></div>
+    <div class="modal-row"><span class="modal-label">QUANTIFICATION</span><span class="modal-val bull">${f.n}</span></div>
+    <div style="margin-top:8px;font-size:7px;color:var(--dim);line-height:1.5">
+      Feedback loops represent self-reinforcing market dynamics where ${f.a.toLowerCase()} directly amplifies ${f.b.toLowerCase()}, creating a measurable secondary effect captured in the composite score.
+    </div>
+  `);
+}
+
+// ═══════════════════════════════ MODAL ══════════════════════════════
+function showModal(title, body){
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-body').innerHTML = body;
+  document.getElementById('modal-overlay').classList.add('show');
+}
+function closeModal(e){
+  if(e && e.target!==document.getElementById('modal-overlay') && e.type==='click') return;
+  document.getElementById('modal-overlay').classList.remove('show');
+}
+
+// ═══════════════════════════════ ALERT PANEL ════════════════════════
+function toggleAlerts(){
+  alertsOpen=!alertsOpen;
+  document.getElementById('alert-panel').classList.toggle('show',alertsOpen);
+  document.getElementById('btn-alerts').classList.toggle('active',alertsOpen);
+  if(alertsOpen) buildAlertPanel();
+}
+
+function buildAlertPanel(){
+  document.getElementById('alert-rows').innerHTML = MINERALS.map(m=>`
+    <div class="arow">
+      <input type="checkbox" ${alertEnabled[m.id]?'checked':''} onchange="alertEnabled['${m.id}']=this.checked">
+      <div class="arow-n">${m.id} — ${m.name}</div>
+      <input type="range" min="30" max="99" value="${alertThresholds[m.id]}" oninput="alertThresholds['${m.id}']=+this.value;this.nextElementSibling.textContent=this.value">
+      <div class="arow-v">${alertThresholds[m.id]}</div>
+    </div>`).join('');
+}
+
+function saveAlerts(){
+  toast('ALERTS SAVED', 'Thresholds updated for all minerals', 'info');
+  toggleAlerts();
+}
+function clearAlerts(){
+  MINERALS.forEach(m=>{ alertThresholds[m.id]=99; alertEnabled[m.id]=false; });
+  buildAlertPanel();
+  toast('ALERTS CLEARED', 'All alert thresholds reset', 'info');
+}
+
+// ═══════════════════════════════ COMPARE ════════════════════════════
+function toggleCompareMode(){
+  compareMode=!compareMode;
+  document.getElementById('btn-compare').classList.toggle('active',compareMode);
+  document.getElementById('compare-bar').classList.toggle('show',compareMode);
+  if(!compareMode){ compareList=[]; renderCompareBar(); }
+  else toast('COMPARE MODE', 'Click minerals to add to comparison', 'info');
+}
+
+function addToCompare(mid){
+  if(compareList.includes(mid)){
+    compareList=compareList.filter(x=>x!==mid);
+  } else {
+    if(compareList.length>=4){ toast('COMPARE LIMIT', 'Max 4 minerals in compare mode', 'info'); return; }
+    compareList.push(mid);
+    toast('ADDED TO COMPARE', mid, 'bull');
+  }
+  renderCompareBar();
+}
+
+function renderCompareBar(){
+  const m=MINERALS.filter(x=>compareList.includes(x.id));
+  document.getElementById('compare-items').innerHTML = m.map(x=>`
+    <div class="cb-item">
+      <span class="cb-sym">${x.id}</span>
+      <span class="cb-val">$${x.price.toLocaleString()}</span>
+      <span style="color:${x.pct>=0?'var(--green)':'var(--red)'}">${x.pct>=0?'+':''}${x.pct}%</span>
+      <span class="cb-val" style="color:${sc(x.score)}">${x.score}</span>
+      <span class="cb-rm" onclick="addToCompare('${x.id}')">✕</span>
+    </div>`).join('');
+}
+
+function clearCompare(){
+  compareList=[]; renderCompareBar();
+}
+
+function showComparison(){
+  if(compareList.length<2){ toast('COMPARE', 'Select at least 2 minerals', 'info'); return; }
+  const ms=MINERALS.filter(x=>compareList.includes(x.id));
+  const rows=['Score','Price','24H %','Deploy %','Direction'];
+  let body=`<table style="width:100%;border-collapse:collapse;font-family:var(--mono);font-size:8px">
+    <tr>${['METRIC',...ms.map(m=>m.id)].map(h=>`<th style="color:var(--gold);padding:4px 6px;text-align:left;border-bottom:1px solid var(--border)">${h}</th>`).join('')}</tr>`;
+  const getData=(m,r)=>r==='Score'?m.score:r==='Price'?'$'+m.price.toLocaleString():r==='24H %'?(m.pct>=0?'+':'')+m.pct+'%':r==='Deploy %'?m.deploy+'%':m.dir.toUpperCase();
+  rows.forEach(r=>{
+    body+=`<tr>${[r,...ms.map(m=>getData(m,r))].map((v,i)=>`<td style="padding:4px 6px;border-bottom:1px solid var(--border);color:${i===0?'var(--dim)':'var(--text)'}">${v}</td>`).join('')}</tr>`;
+  });
+  body+='</table>';
+  showModal(`COMPARISON — ${compareList.join(' vs ')}`, body);
+}
+
+// ═══════════════════════════════ SEARCH ═════════════════════════════
+function openSearch(){
+  const w=document.getElementById('search-wrap');
+  w.classList.toggle('show');
+  if(w.classList.contains('show')) document.getElementById('search-input').focus();
+}
+
+document.getElementById('search-input').addEventListener('input', function(){
+  const q=this.value.toLowerCase();
+  if(!q){ document.getElementById('search-results').innerHTML=''; return; }
+  const results=[];
+  MINERALS.forEach(m=>{ if(m.name.toLowerCase().includes(q)||m.id.toLowerCase().includes(q)||m.sym.toLowerCase().includes(q)) results.push({t:`${m.id} — ${m.name}`,v:'$'+m.price.toLocaleString()+' · '+m.score+'/100',action:()=>{ const i=MINERALS.indexOf(m); sel(i); openSearch(); }}); });
+  EVENTS.forEach((e,i)=>{ if(e.t.toLowerCase().includes(q)||e.m.toLowerCase().includes(q)) results.push({t:e.t,v:`${e.m} · ${e.imp.toUpperCase()} · ${e.tte}`,action:()=>{ showEventDetail(i); openSearch(); }}); });
+  LEADING.forEach(l=>{ if(l.n.toLowerCase().includes(q)) results.push({t:l.n,v:`Lead: +${l.l}d · Score: ${l.s}`,action:()=>{ showLeadingDetail(l.n,l.l,l.s,l.dir); openSearch(); }}); });
+  document.getElementById('search-results').innerHTML = results.slice(0,6).map((r,i)=>`
+    <div class="sr" onclick="searchResults[${i}].action()">
+      <span>${r.t}</span><span style="color:var(--gold)">${r.v}</span>
+    </div>`).join('') || `<div style="font-family:var(--mono);font-size:8px;color:var(--dim);padding:6px">No results</div>`;
+  window.searchResults=results;
+});
+
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeModal(); document.getElementById('search-wrap').classList.remove('show'); document.getElementById('alert-panel').classList.remove('show'); alertsOpen=false; } });
+
+// ═══════════════════════════════ PAUSE / RESET ══════════════════════
+function togglePause(){
+  paused=!paused;
+  document.getElementById('btn-pause').textContent = paused ? '▶ RESUME' : '⏸ PAUSE';
+  document.getElementById('btn-pause').classList.toggle('danger', paused);
+  document.getElementById('bt-status').textContent = paused ? 'PAUSED' : 'ACTIVE';
+  document.getElementById('bt-status').style.color = paused ? 'var(--red)' : 'var(--green)';
+  toast(paused?'FEED PAUSED':'FEED RESUMED', paused?'Data updates suspended':'Live updates restored', paused?'bear':'bull');
+}
+
+function resetAll(){
+  MINERALS.forEach(m=>{
+    priceH[m.id]=[];
+    let v=m.price*.97;
+    for(let i=0;i<120;i++){ v*=(1+(Math.random()-.48)*.003); priceH[m.id].push(+v.toFixed(m.price<100?2:m.price<1000?1:0)); }
+  });
+  btH=Array.from({length:50},(_,i)=>42+Math.sin(i*.35)*10+Math.random()*4);
+  cycles=0; dismissedEvents.clear(); dismissedCount=0; compareList=[];
+  document.getElementById('dismissed-count').textContent='0';
+  renderAll();
+  toast('SYSTEM RESET', 'All history cleared and regenerated', 'info');
+}
+
+function cycleView(){
+  const btn=document.getElementById('btn-theme');
+  const views=['STANDARD','FOCUSED','COMPACT'];
+  let cur=views.indexOf(btn.textContent.replace('◈ VIEW: ',''));
+  cur=(cur+1)%views.length;
+  btn.textContent='◈ VIEW: '+views[cur];
+  toast('VIEW MODE', views[cur], 'info');
+}
+
+function exportSnapshot(){
+  const snap={
+    timestamp: new Date().toISOString(),
+    minerals: MINERALS.map(m=>({id:m.id,name:m.name,price:m.price,pct:m.pct,score:m.score,dir:m.dir,deploy:m.deploy})),
+    backtestCycles: totalBtCycles,
+    activeSignals: +document.getElementById('sig-count').textContent,
+  };
+  const blob=new Blob([JSON.stringify(snap,null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download=`dmx-snapshot-${Date.now()}.json`; a.click();
+  toast('SNAPSHOT EXPORTED', 'JSON exported to downloads', 'bull');
+}
+
+// ═══════════════════════════════ MAIN CHART ══════════════════════════
+let chartData=[], chartPad={l:50,r:14,t:12,b:24};
+
+function drawChart(){
+  const cv=document.getElementById('mchart'), ctx=cv.getContext('2d');
+  cv.width=cv.offsetWidth;
+  const W=cv.width, H=cv.height;
+  ctx.clearRect(0,0,W,H);
+  const m=MINERALS[activeM];
+  const raw=priceH[m.id];
+  const n=chartR==='1D'?24:chartR==='5D'?60:chartR==='1M'?90:120;
+  chartData=raw.slice(-n);
+  const mn=Math.min(...chartData)*.998, mx=Math.max(...chartData)*1.002, rng=mx-mn||1;
+  const pad=chartPad;
+  const cw=W-pad.l-pad.r, ch=H-pad.t-pad.b;
+  const px=i=>pad.l+(i/(chartData.length-1))*cw;
+  const py=v=>pad.t+ch-((v-mn)/rng)*ch;
+
+  ctx.setLineDash([2,4]); ctx.strokeStyle='rgba(58,106,150,.18)'; ctx.lineWidth=.5;
+  for(let g=0;g<=4;g++){
+    const gy=pad.t+g*(ch/4);
+    ctx.beginPath(); ctx.moveTo(pad.l,gy); ctx.lineTo(W-pad.r,gy); ctx.stroke();
+    ctx.fillStyle='rgba(90,122,144,.7)'; ctx.font='8px IBM Plex Mono'; ctx.textAlign='right';
+    ctx.fillText((mx-(g/4)*rng).toFixed(m.price<100?2:m.price<1000?1:0),pad.l-3,gy+3);
+  }
+  ctx.setLineDash([]);
+
+  const sm=chartData.map((_,i,a)=>{ const w=a.slice(Math.max(0,i-7),i+1); return w.reduce((s,v)=>s+v,0)/w.length; });
+  const up=sm.map(v=>v*1.007), lo=sm.map(v=>v*.993);
+  const cg=ctx.createLinearGradient(0,pad.t,0,pad.t+ch);
+  cg.addColorStop(0,'rgba(200,151,58,.07)'); cg.addColorStop(1,'rgba(200,151,58,.01)');
+  ctx.beginPath();
+  up.forEach((v,i)=>i===0?ctx.moveTo(px(i),py(v)):ctx.lineTo(px(i),py(v)));
+  lo.slice().reverse().forEach((v,i,a)=>ctx.lineTo(px(a.length-1-i),py(v)));
+  ctx.closePath(); ctx.fillStyle=cg; ctx.fill();
+  [up,lo].forEach(b=>{
+    ctx.beginPath(); b.forEach((v,i)=>i===0?ctx.moveTo(px(i),py(v)):ctx.lineTo(px(i),py(v)));
+    ctx.strokeStyle='rgba(200,151,58,.35)'; ctx.lineWidth=.7; ctx.setLineDash([2,3]); ctx.stroke(); ctx.setLineDash([]);
+  });
+
+  const up2=chartData[chartData.length-1]>=chartData[0];
+  const lc=up2?'#2ECC8A':'#E05555', fc=up2?'rgba(46,204,138,':'rgba(224,85,85,';
+  const ag=ctx.createLinearGradient(0,pad.t,0,pad.t+ch);
+  ag.addColorStop(0,fc+'.16)'); ag.addColorStop(1,fc+'.01)');
+  ctx.beginPath(); ctx.moveTo(px(0),pad.t+ch);
+  chartData.forEach((v,i)=>ctx.lineTo(px(i),py(v)));
+  ctx.lineTo(px(chartData.length-1),pad.t+ch); ctx.closePath(); ctx.fillStyle=ag; ctx.fill();
+  ctx.beginPath(); chartData.forEach((v,i)=>i===0?ctx.moveTo(px(i),py(v)):ctx.lineTo(px(i),py(v)));
+  ctx.strokeStyle=lc; ctx.lineWidth=1.5; ctx.shadowBlur=4; ctx.shadowColor=lc; ctx.stroke(); ctx.shadowBlur=0;
+
+  const ma=chartData.map((_,i,a)=>{ if(i<19)return null; return a.slice(i-19,i+1).reduce((s,v)=>s+v,0)/20; });
+  ctx.beginPath(); let st=false;
+  ma.forEach((v,i)=>{ if(!v)return; !st?(ctx.moveTo(px(i),py(v)),st=true):ctx.lineTo(px(i),py(v)); });
+  ctx.strokeStyle='rgba(155,112,208,.7)'; ctx.lineWidth=1; ctx.stroke();
+
+  [Math.floor(chartData.length*.22),Math.floor(chartData.length*.58)].forEach(idx=>{
+    if(idx>=chartData.length)return;
+    ctx.beginPath(); ctx.moveTo(px(idx),pad.t); ctx.lineTo(px(idx),pad.t+ch);
+    ctx.strokeStyle='rgba(200,151,58,.28)'; ctx.lineWidth=.8; ctx.setLineDash([2,3]); ctx.stroke(); ctx.setLineDash([]);
+    ctx.beginPath(); ctx.arc(px(idx),pad.t+4,2.5,0,Math.PI*2);
+    ctx.fillStyle='rgba(200,151,58,.7)'; ctx.fill();
+  });
+
+  const li=chartData.length-1;
+  ctx.beginPath(); ctx.arc(px(li),py(chartData[li]),3.5,0,Math.PI*2);
+  ctx.fillStyle=lc; ctx.shadowBlur=8; ctx.shadowColor=lc; ctx.fill(); ctx.shadowBlur=0;
+  ctx.fillStyle=lc; ctx.font='bold 9px IBM Plex Mono'; ctx.textAlign='left';
+  ctx.fillText('$'+chartData[li].toLocaleString(),px(li)+5,py(chartData[li])+3);
+
+  ctx.fillStyle='rgba(90,122,144,.6)'; ctx.font='7px IBM Plex Mono'; ctx.textAlign='center';
+  for(let t=0;t<=4;t++){
+    const i=Math.floor((t/4)*(chartData.length-1));
+    ctx.fillText(chartR==='1D'?(9+Math.floor(i/2))+'h':('D-'+(chartData.length-1-i)),px(i),pad.t+ch+15);
+  }
+
+  [{c:lc,l:'Price'},{c:'rgba(200,151,58,.5)',l:'Band'},{c:'rgba(155,112,208,.7)',l:'MA20'},{c:'rgba(200,151,58,.55)',l:'Signal'}]
+    .forEach((l,i)=>{
+      const lx=pad.l+i*78;
+      ctx.fillStyle=l.c; ctx.fillRect(lx,5,10,2.5);
+      ctx.fillStyle='rgba(138,170,192,.7)'; ctx.font='7px IBM Plex Mono'; ctx.textAlign='left';
+      ctx.fillText(l.l,lx+13,8);
+    });
+
+  document.getElementById('chart-meta').textContent = `${MINERALS[activeM].name} · $${chartData[li].toLocaleString()} · ${up2?'▲':'▼'}${Math.abs(MINERALS[activeM].pct)}%`;
+}
+
+// Chart crosshair
+const chartCanvas=document.getElementById('mchart');
+const xhair=document.getElementById('chart-crosshair');
+chartCanvas.addEventListener('mousemove',function(e){
+  if(!chartData.length) return;
+  const rect=this.getBoundingClientRect();
+  const mx=e.clientX-rect.left;
+  const m=MINERALS[activeM];
+  const pad=chartPad;
+  const cw=this.width-(pad.l+pad.r);
+  const idx=Math.max(0,Math.min(chartData.length-1,Math.round((mx-pad.l)/cw*(chartData.length-1))));
+  const price=chartData[idx];
+  if(price===undefined) return;
+  const label=chartR==='1D'?(9+Math.floor(idx/2))+'h':('D-'+(chartData.length-1-idx));
+  xhair.style.display='block';
+  xhair.style.left=(e.clientX-rect.left+this.getBoundingClientRect().left-this.parentElement.getBoundingClientRect().left+8)+'px';
+  xhair.style.top=(e.clientY-this.parentElement.getBoundingClientRect().top-10)+'px';
+  xhair.innerHTML=`<span style="color:var(--gold)">${m.id}</span> ${label}<br>$${price.toLocaleString()}<br><span style="color:var(--dim)">${idx+1}/${chartData.length}</span>`;
+});
+chartCanvas.addEventListener('mouseleave',()=>{ xhair.style.display='none'; });
+
+// ═══════════════════════════════ SELECT ═════════════════════════════
+function sel(i, e){
+  if(compareMode){
+    addToCompare(MINERALS[i].id);
+    return;
+  }
+  activeM=i;
+  expandedSig=-1;
+  buildTabs();
+  renderLeft();
+  renderStrip();
+  renderSigs();
+  drawChart();
+}
+
+// ═══════════════════════════════ TICK ═══════════════════════════════
+function checkAlerts(){
+  MINERALS.forEach(m=>{
+    if(!alertEnabled[m.id]) return;
+    if(m.score >= alertThresholds[m.id] && !alertFiredMap[m.id]){
+      alertFiredMap[m.id]=true;
+      alertFired++;
+      document.getElementById('alert-count').textContent=alertFired;
+      toast(`⚑ ALERT: ${m.id}`, `Score ${m.score} ≥ threshold ${alertThresholds[m.id]}`, 'bull');
+    } else if(m.score < alertThresholds[m.id]){
+      alertFiredMap[m.id]=false;
+    }
+  });
+}
+
+function tick(){
+  if(paused) return;
+  cycles++;
+  totalBtCycles++;
+  MINERALS.forEach(m=>{
+    const h=priceH[m.id], last=h[h.length-1];
+    const nv=last*(1+(Math.random()-.492)*.003);
+    h.push(+nv.toFixed(m.price<100?2:m.price<1000?1:0));
+    if(h.length>200)h.shift();
+    m.price=+nv.toFixed(m.price<100?2:m.price<1000?1:0);
+    m.pct=+((nv/h[h.length-40]-1)*100).toFixed(2);
+    m.signals=m.signals.map(s=>Math.max(5,Math.min(99,Math.round(s+(Math.random()-.5)*2.5))));
+    m.score=Math.round(m.signals.reduce((a,b)=>a+b,0)/m.signals.length);
+    m.dir=m.score>=65?'bull':m.score>=40?'neut':'bear';
+  });
+
+  const bl=btH[btH.length-1];
+  btH.push(+(bl*(1+(Math.random()-.47)*.018)).toFixed(2));
+  if(btH.length>60)btH.shift();
+
+  const t=nowt();
+  document.getElementById('clock').textContent=t;
+  document.getElementById('last-up').textContent=t;
+  document.getElementById('cycle-count').textContent=cycles;
+  document.getElementById('fb-ts').textContent=t;
+  document.getElementById('conf-ts').textContent=t;
+  document.getElementById('bt-cycles').textContent=totalBtCycles+' backtest cycles';
+
+  const cv=72+Math.round(Math.random()*12);
+  document.getElementById('conf-val').textContent=cv+'%';
+  drawRing(cv);
+
+  renderLeft();
+  renderStrip();
+  renderSigs();
+  drawChart();
+  drawBt();
+  checkAlerts();
+
+  if(cycles%3===0) document.getElementById('sig-count').textContent=45+Math.round(Math.random()*7);
+}
+
+function renderAll(){
+  buildTabs();
+  renderLeft();
+  renderStrip();
+  renderSigs();
+  renderEvents();
+  renderLeading();
+  renderDeploy();
+  renderBacktest();
+  renderModel();
+  renderSecond();
+  renderFeedback();
+  drawRing(78);
+  requestAnimationFrame(()=>{ drawChart(); });
+}
+
+// ═══════════════════════════════ WIRING ═════════════════════════════
+document.getElementById('mtabs').addEventListener('click',e=>{
+  const b=e.target.closest('.mtab'); if(!b)return; sel(+b.dataset.i);
+});
+document.getElementById('ctabs').addEventListener('click',e=>{
+  const b=e.target.closest('.ctab'); if(!b)return;
+  document.querySelectorAll('.ctab').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on'); chartR=b.dataset.r; drawChart();
+});
+window.addEventListener('resize',()=>{ drawChart(); });
+document.addEventListener('click',e=>{
+  if(!document.getElementById('search-wrap').contains(e.target) && e.target.tagName!=='BUTTON'){
+    document.getElementById('search-wrap').classList.remove('show');
+  }
+  if(!document.getElementById('alert-panel').contains(e.target) && !document.getElementById('btn-alerts').contains(e.target)){
+    document.getElementById('alert-panel').classList.remove('show');
+    alertsOpen=false;
+    document.getElementById('btn-alerts').classList.add('active');
+  }
+});
+
+// ═══════════════════════════════ INIT ═══════════════════════════════
+renderAll();
+setInterval(tick, 2000);
+setInterval(()=>{ document.getElementById('clock').textContent=nowt(); }, 1000);
+</script>
+
+
+</body></html>

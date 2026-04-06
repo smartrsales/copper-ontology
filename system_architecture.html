@@ -1,0 +1,1770 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><style>
+  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&display=swap');
+
+  :root {
+    --ink: #0a0a0a;
+    --ink-mid: #1c1c1c;
+    --ink-light: #3a3a3a;
+    --rule: #bebebe;
+    --rule-light: #d8d8d8;
+    --rule-faint: #ececec;
+    --accent: #0a0a0a;
+    --paper: #fafaf8;
+    --tint-a: #f2f2ef;
+    --tint-b: #e8e8e4;
+    --tint-c: #1c1c1c;
+    --gold: #8a7340;
+    --gold-light: #b8a060;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #e0e0dc;
+    font-family: 'EB Garamond', Georgia, serif;
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* NAV */
+  .nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: var(--ink);
+    color: #f0f0ec;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    height: 52px;
+    border-bottom: 1px solid #333;
+  }
+  .nav-brand {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #aaa;
+  }
+  .nav-brand span { color: #f0f0ec; }
+  .nav-tabs {
+    display: flex;
+    gap: 2px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav-tabs::-webkit-scrollbar { display: none; }
+  .nav-tab {
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #777;
+    padding: 6px 12px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+  .nav-tab:hover { color: #ccc; border-color: #444; }
+  .nav-tab.active { color: #f0f0ec; border-color: #666; background: #2a2a2a; }
+
+  /* PAGES */
+  .page {
+    display: none;
+    padding: 52px 0 0 0;
+    min-height: 100vh;
+  }
+  .page.active { display: block; }
+
+  .diagram-sheet {
+    background: var(--paper);
+    margin: 24px auto;
+    max-width: 1200px;
+    box-shadow: 0 4px 40px rgba(0,0,0,0.18);
+    position: relative;
+  }
+
+  /* SHEET HEADER */
+  .sheet-header {
+    border-bottom: 2.5px solid var(--ink);
+    padding: 28px 40px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .sheet-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 6px;
+  }
+  .sheet-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+  .sheet-meta {
+    text-align: right;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: #888;
+    letter-spacing: 0.08em;
+    line-height: 1.8;
+  }
+
+  /* DIAGRAM BODY */
+  .diagram-body {
+    padding: 32px 40px 40px;
+  }
+
+  /* SHEET FOOTER */
+  .sheet-footer {
+    border-top: 1px solid var(--rule);
+    padding: 10px 40px;
+    display: flex;
+    justify-content: space-between;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: #aaa;
+    letter-spacing: 0.06em;
+  }
+
+  /* ===================== DIAGRAM 1 — FULL SYSTEM ARCHITECTURE ===================== */
+  .arch-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .plane {
+    border: 1px solid var(--rule);
+    margin-bottom: -1px;
+    display: grid;
+    grid-template-columns: 160px 1fr;
+  }
+  .plane-label {
+    background: var(--ink);
+    color: #f0f0ec;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 10px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    min-height: 70px;
+  }
+  .plane-label.mid { background: var(--ink-mid); }
+  .plane-label.light { background: var(--ink-light); }
+  .plane-label.rule { background: #555; }
+  .plane-label.ops { background: #333; }
+
+  .plane-content {
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    border-left: 1px solid var(--rule);
+    background: var(--paper);
+  }
+  .plane-content.alt { background: var(--tint-a); }
+
+  .arch-box {
+    border: 1px solid var(--ink-mid);
+    padding: 7px 12px;
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    color: var(--ink);
+    background: white;
+    white-space: nowrap;
+    position: relative;
+  }
+  .arch-box.filled {
+    background: var(--ink);
+    color: #f0f0ec;
+    border-color: var(--ink);
+  }
+  .arch-box.accent {
+    background: var(--tint-b);
+    border-color: var(--ink-light);
+  }
+  .arch-box small {
+    display: block;
+    font-size: 8.5px;
+    color: #777;
+    margin-top: 2px;
+    font-family: 'DM Mono', monospace;
+  }
+  .arch-box.filled small { color: #aaa; }
+
+  .arch-arrow {
+    font-size: 14px;
+    color: var(--rule);
+    font-family: 'DM Mono', monospace;
+  }
+
+  .arch-divider {
+    width: 100%;
+    height: 1px;
+    background: var(--rule-light);
+    margin: 6px 0;
+  }
+
+  .plane-sublabel {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    color: #999;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    width: 100%;
+    margin-bottom: 4px;
+  }
+
+  /* ===================== DIAGRAM 2 — AGENT FLOW ===================== */
+  .agent-flow {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    overflow-x: auto;
+    padding: 8px 0;
+  }
+  .agent-node {
+    flex: 1;
+    min-width: 140px;
+    border: 1px solid var(--ink);
+    background: white;
+    position: relative;
+  }
+  .agent-node-header {
+    background: var(--ink);
+    color: #f0f0ec;
+    padding: 10px 12px 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    line-height: 1.3;
+  }
+  .agent-node-header .num {
+    display: block;
+    font-size: 18px;
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    color: #888;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .agent-node-body {
+    padding: 10px 12px;
+    font-size: 10px;
+    color: var(--ink-light);
+    font-family: 'DM Mono', monospace;
+    line-height: 1.6;
+  }
+  .agent-node-body .label {
+    font-size: 8px;
+    color: #aaa;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-top: 6px;
+    display: block;
+  }
+  .agent-connector {
+    width: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 60px;
+    flex-shrink: 0;
+  }
+  .agent-connector svg { width: 24px; height: 20px; }
+
+  /* ===================== DIAGRAM 3 — DATA FLOW ===================== */
+  .data-flow {
+    display: grid;
+    grid-template-columns: 1fr 40px 1fr 40px 1fr 40px 1fr;
+    gap: 0;
+    align-items: start;
+  }
+  .df-stage { }
+  .df-stage-header {
+    background: var(--ink);
+    color: #f0f0ec;
+    padding: 8px 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .df-item {
+    border-left: 2px solid var(--rule);
+    padding: 5px 12px;
+    font-size: 10.5px;
+    font-family: 'DM Mono', monospace;
+    color: var(--ink-light);
+    margin-bottom: 3px;
+    background: var(--tint-a);
+    border-bottom: 1px solid var(--rule-light);
+  }
+  .df-item:hover { background: var(--tint-b); border-left-color: var(--ink); }
+  .df-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 40px;
+  }
+
+  /* ===================== DIAGRAM 4 — CLOSED LOOP ===================== */
+  .loop-diagram {
+    position: relative;
+    height: 560px;
+    background: var(--paper);
+  }
+  .loop-node {
+    position: absolute;
+    border: 1px solid var(--ink);
+    background: white;
+    padding: 10px 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    text-align: center;
+    width: 120px;
+    line-height: 1.4;
+  }
+  .loop-node.center {
+    background: var(--ink);
+    color: #f0f0ec;
+    width: 150px;
+    padding: 14px;
+    font-size: 10px;
+  }
+  .loop-node small {
+    display: block;
+    font-size: 8px;
+    color: #888;
+    margin-top: 3px;
+  }
+  .loop-node.center small { color: #aaa; }
+
+  /* ===================== DIAGRAM 5 — HARDWARE TOPOLOGY ===================== */
+  .hw-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+  }
+  .hw-zone {
+    border: 1px solid var(--rule);
+    background: var(--tint-a);
+  }
+  .hw-zone-header {
+    background: var(--ink-mid);
+    color: #f0f0ec;
+    padding: 8px 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .hw-zone-body { padding: 14px; }
+  .hw-machine {
+    border: 1px solid var(--ink);
+    background: white;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+  }
+  .hw-machine .name {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .hw-machine .spec {
+    font-size: 8.5px;
+    color: #777;
+    line-height: 1.6;
+  }
+  .hw-machine.primary { border-left: 3px solid var(--ink); }
+  .hw-machine.secondary { border-left: 3px solid #888; }
+  .hw-machine.cloud { border-left: 3px solid var(--rule); background: var(--tint-a); }
+
+  /* ===================== DIAGRAM 6 — RISK & EXECUTION ===================== */
+  .rex-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .rex-panel {
+    border: 1px solid var(--rule);
+  }
+  .rex-panel-header {
+    background: var(--ink);
+    color: #f0f0ec;
+    padding: 10px 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .rex-panel-header .badge {
+    background: #444;
+    color: #aaa;
+    font-size: 8px;
+    padding: 2px 7px;
+    border-radius: 1px;
+  }
+  .rex-panel-body { padding: 14px 16px; }
+  .rex-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--rule-faint);
+    font-size: 11px;
+    color: var(--ink-light);
+  }
+  .rex-item:last-child { border-bottom: none; }
+  .rex-dot {
+    width: 6px;
+    height: 6px;
+    border: 1px solid var(--ink-light);
+    flex-shrink: 0;
+  }
+  .rex-dot.filled { background: var(--ink); border-color: var(--ink); }
+  .rex-dot.kill { background: #2a2a2a; border-color: #000; }
+
+  .venue-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .venue-box {
+    border: 1px solid var(--rule);
+    padding: 7px 10px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    background: var(--tint-a);
+  }
+  .venue-box .v-name { color: var(--ink); font-size: 10px; margin-bottom: 2px; }
+  .venue-box .v-type { color: #888; font-size: 8px; }
+
+  /* ===================== DIAGRAM 7 — BACKUP & FAILOVER ===================== */
+  .bk-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+  }
+  .bk-table th {
+    background: var(--ink);
+    color: #f0f0ec;
+    padding: 8px 14px;
+    text-align: left;
+    font-size: 8.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+  .bk-table td {
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--rule-light);
+    color: var(--ink-light);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  .bk-table tr:nth-child(even) td { background: var(--tint-a); }
+  .bk-table tr:hover td { background: var(--tint-b); }
+  .bk-tag {
+    display: inline-block;
+    border: 1px solid var(--ink-light);
+    padding: 1px 6px;
+    font-size: 8px;
+    margin: 1px;
+    color: var(--ink);
+  }
+  .bk-tag.ok { background: var(--ink); color: #f0f0ec; border-color: var(--ink); }
+
+  /* ===================== DIAGRAM 8 — REPORTING ===================== */
+  .rpt-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0;
+  }
+  .rpt-col {
+    border: 1px solid var(--rule);
+    margin-right: -1px;
+  }
+  .rpt-col-header {
+    background: var(--ink-mid);
+    color: #f0f0ec;
+    padding: 10px 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+  .rpt-col-body { padding: 16px 14px; }
+  .rpt-item {
+    padding: 7px 0;
+    border-bottom: 1px solid var(--rule-faint);
+    font-size: 11px;
+    color: var(--ink-light);
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .rpt-item:last-child { border-bottom: none; }
+  .rpt-icon {
+    width: 14px;
+    height: 14px;
+    border: 1px solid var(--ink-light);
+    flex-shrink: 0;
+    margin-top: 1px;
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink);
+  }
+
+  /* Utility */
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 24px 0 16px;
+  }
+  .section-divider-line { flex: 1; height: 1px; background: var(--rule); }
+  .section-divider-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #999;
+    white-space: nowrap;
+  }
+
+  .note-bar {
+    background: var(--tint-b);
+    border-left: 3px solid var(--ink);
+    padding: 8px 14px;
+    margin: 16px 0;
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    color: var(--ink-light);
+    line-height: 1.5;
+  }
+
+  .tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+  }
+  .tag {
+    border: 1px solid var(--ink-light);
+    padding: 3px 9px;
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    color: var(--ink);
+  }
+  .tag.dark { background: var(--ink); color: #f0f0ec; border-color: var(--ink); }
+
+  /* Phase timeline */
+  .phase-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0;
+    margin-top: 20px;
+  }
+  .phase-col {
+    border: 1px solid var(--rule);
+    margin-right: -1px;
+  }
+  .phase-col-header {
+    padding: 8px 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--rule);
+  }
+  .phase-col:nth-child(1) .phase-col-header { background: var(--ink); color: #f0f0ec; }
+  .phase-col:nth-child(2) .phase-col-header { background: var(--ink-mid); color: #f0f0ec; }
+  .phase-col:nth-child(3) .phase-col-header { background: var(--ink-light); color: #f0f0ec; }
+  .phase-col-body { padding: 12px 14px; }
+  .phase-item {
+    font-size: 10.5px;
+    color: var(--ink-light);
+    padding: 3px 0;
+    border-bottom: 1px solid var(--rule-faint);
+    font-family: 'DM Mono', monospace;
+    line-height: 1.4;
+  }
+  .phase-item:last-child { border-bottom: none; }
+</style></head><body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-brand"><span>DMX</span> · AI Intelligence Platform</div>
+  <div class="nav-tabs">
+    <div class="nav-tab active" onclick="showPage(0)">01 · Full Architecture</div>
+    <div class="nav-tab" onclick="showPage(1)">02 · Agent Pipeline</div>
+    <div class="nav-tab" onclick="showPage(2)">03 · Data Flow</div>
+    <div class="nav-tab" onclick="showPage(3)">04 · Closed Loop</div>
+    <div class="nav-tab" onclick="showPage(4)">05 · Hardware</div>
+    <div class="nav-tab" onclick="showPage(5)">06 · Risk &amp; Execution</div>
+    <div class="nav-tab" onclick="showPage(6)">07 · Backup &amp; Failover</div>
+    <div class="nav-tab" onclick="showPage(7)">08 · Reporting</div>
+  </div>
+</nav>
+
+<!-- ========================= PAGE 01 — FULL SYSTEM ARCHITECTURE ========================= -->
+<div class="page active" id="page-0">
+  <div class="diagram-sheet">
+    <div class="sheet-header">
+      <div>
+        <div class="sheet-title">Diagram 01 · System Architecture</div>
+        <div class="sheet-name">Full Hedge Fund<br>Operating System</div>
+      </div>
+      <div class="sheet-meta">
+        DMX AI Intelligence Platform<br>
+        Critical Minerals · Commodities · Digital Assets<br>
+        Confidential · March 2026<br>
+        10 Integrated Planes
+      </div>
+    </div>
+    <div class="diagram-body">
+
+      <div class="arch-grid">
+
+        <!-- PLANE 1 -->
+        <div class="plane">
+          <div class="plane-label">01 · Research &amp; Intelligence</div>
+          <div class="plane-content">
+            <div class="plane-sublabel">Data Sources → Ingestion → Knowledge</div>
+            <div class="arch-box">Exchange Data<small>LME · COMEX · SHFE</small></div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-box filled">Source Harvester<small>30+ Sources · 15–60min</small></div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-box filled">Document Parser<small>PDF · HTML · Filings</small></div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-box filled">Entity Resolver<small>Canonical Asset IDs</small></div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-box accent">Knowledge Graph<small>Mines · Ports · Smelters</small></div>
+            <div class="arch-divider"></div>
+            <div class="arch-box">Mining Releases</div>
+            <div class="arch-box">Shipping / Ports</div>
+            <div class="arch-box">Policy / Sanctions</div>
+            <div class="arch-box">Satellite / Weather</div>
+            <div class="arch-box">Earnings / Transcripts</div>
+            <div class="arch-box">Prediction Markets</div>
+          </div>
+        </div>
+
+        <!-- PLANE 2 -->
+        <div class="plane">
+          <div class="plane-label mid">02 · Signal Engine</div>
+          <div class="plane-content alt">
+            <div class="plane-sublabel">Five Structured Signal Families → Rules + ML + Gradient Boosting</div>
+            <div class="arch-box filled">Physical Tightness<small>Inventory · TC/RC · Stock-Use</small></div>
+            <div class="arch-box filled">Logistics Disruption<small>Port · Vessel · Rail</small></div>
+            <div class="arch-box filled">Policy &amp; Geopol.<small>Export Bans · Sanctions</small></div>
+            <div class="arch-box filled">Demand Nowcast<small>EV · Steel · PMI</small></div>
+            <div class="arch-box accent">Composite Signal<small>Bull/Bear · Confidence</small></div>
+          </div>
+        </div>
+
+        <!-- PLANE 3 -->
+        <div class="plane">
+          <div class="plane-label light">03 · Strategy &amp; Backtest</div>
+          <div class="plane-content">
+            <div class="plane-sublabel">Signal Validation → Strategy Research → Model Governance</div>
+            <div class="arch-box">Factor Discovery<small>Event-driven · Macro</small></div>
+            <div class="arch-box">Walk-Forward Test<small>Rolling Windows</small></div>
+            <div class="arch-box">Regime Detection<small>Bull / Bear / Crisis</small></div>
+            <div class="arch-box">Monte Carlo<small>Scenario Simulation</small></div>
+            <div class="arch-box filled">Model Registry<small>Versioned Strategies</small></div>
+            <div class="arch-box accent">Paper Trading<small>Pre-production gate</small></div>
+          </div>
+        </div>
+
+        <!-- PLANE 4 -->
+        <div class="plane">
+          <div class="plane-label">04 · Decision &amp; Portfolio</div>
+          <div class="plane-content alt">
+            <div class="plane-sublabel">Signal Aggregation → Confidence Scoring → Allocation</div>
+            <div class="arch-box filled">Decision Engine<small>Conviction · Weight · Horizon</small></div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-box">Macro / Thematic<small>Discretionary Sleeve</small></div>
+            <div class="arch-box">Systematic Commod.<small>Rules-Based Sleeve</small></div>
+            <div class="arch-box">Event-Driven<small>Catalyst Sleeve</small></div>
+            <div class="arch-box">Crypto / Perps<small>Digital Asset Sleeve</small></div>
+            <div class="arch-box">Prediction Mkts<small>Polymarket · Kalshi</small></div>
+            <div class="arch-box accent">Hedging<small>Protection Sleeve</small></div>
+          </div>
+        </div>
+
+        <!-- PLANE 5 — RISK (highlighted) -->
+        <div class="plane">
+          <div class="plane-label mid" style="background:#111;">05 · Risk Management ⊗</div>
+          <div class="plane-content" style="border-left:3px solid var(--ink);">
+            <div class="plane-sublabel">Independent Control — Authority to Block Trades at Any Stage</div>
+            <div class="arch-box">Pre-Trade Checks<small>Size · Exposure · Leverage</small></div>
+            <div class="arch-box">Real-Time VaR<small>P&amp;L · ES · Drawdown</small></div>
+            <div class="arch-box">Scenario Risk<small>Geopolitical Shocks</small></div>
+            <div class="arch-box filled">Kill Switch<small>Portfolio / Strategy</small></div>
+            <div class="arch-box filled">Throttle Engine<small>Auto on Slippage</small></div>
+            <div class="arch-box">Correlation Risk<small>Cross-Asset Mapping</small></div>
+          </div>
+        </div>
+
+        <!-- PLANE 6 -->
+        <div class="plane">
+          <div class="plane-label light">06 · Execution</div>
+          <div class="plane-content alt">
+            <div class="plane-sublabel">OMS → Smart Routing → Exchange Connectivity → Post-Trade</div>
+            <div class="arch-box">OMS / EMS<small>Order Lifecycle</small></div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-box">Smart Router<small>Venue Selection</small></div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-box filled">CME · LME · ICE<small>Commodities</small></div>
+            <div class="arch-box filled">NYSE · NASDAQ<small>Equities via Broker</small></div>
+            <div class="arch-box filled">Binance · Deribit<small>Crypto / Perps</small></div>
+            <div class="arch-box filled">Polymarket · Kalshi<small>Prediction Markets</small></div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-box accent">TCA · Recon<small>Post-Trade</small></div>
+          </div>
+        </div>
+
+        <!-- PLANE 7 -->
+        <div class="plane">
+          <div class="plane-label rule">07 · Treasury &amp; Capital</div>
+          <div class="plane-content">
+            <div class="plane-sublabel">Cash · Margin · Collateral · Settlement</div>
+            <div class="arch-box">Fund Bank Accounts<small>Fiat / Stablecoin</small></div>
+            <div class="arch-box">Prime Broker<small>Margin Accounts</small></div>
+            <div class="arch-box">Exchange Wallets<small>Crypto / Perp Venues</small></div>
+            <div class="arch-box">Collateral Pool<small>Optimization</small></div>
+            <div class="arch-box accent">Settlement Engine<small>T+1 / T+2 / Instant</small></div>
+          </div>
+        </div>
+
+        <!-- PLANE 8 -->
+        <div class="plane">
+          <div class="plane-label ops">08 · Compliance &amp; Governance</div>
+          <div class="plane-content alt">
+            <div class="plane-sublabel">Pre-Trade Compliance → Model Governance → Audit → Recordkeeping</div>
+            <div class="arch-box">Sanctions Screening<small>OFAC · EU · UN Lists</small></div>
+            <div class="arch-box">Restricted Lists<small>Jurisdiction Rules</small></div>
+            <div class="arch-box filled">Audit Trail<small>Immutable Log</small></div>
+            <div class="arch-box">Model Governance<small>Approval Workflow</small></div>
+            <div class="arch-box">RBAC<small>Role-Based Access</small></div>
+          </div>
+        </div>
+
+        <!-- PLANE 9 -->
+        <div class="plane">
+          <div class="plane-label light">09 · Reporting</div>
+          <div class="plane-content">
+            <div class="plane-sublabel">Internal · Investor · Management · AI-Generated Narrative (QA Reviewed)</div>
+            <div class="arch-box filled">Real-Time P&amp;L<small>Internal Dashboard</small></div>
+            <div class="arch-box">NAV Reporting<small>Daily Flash</small></div>
+            <div class="arch-box">Strategy Attribution<small>Sleeve-Level</small></div>
+            <div class="arch-box accent">Investor Reports<small>Weekly · Monthly · QR</small></div>
+            <div class="arch-box">Narrative Writer<small>AI + QA Review</small></div>
+          </div>
+        </div>
+
+        <!-- PLANE 10 -->
+        <div class="plane">
+          <div class="plane-label mid">10 · Platform &amp; DevOps</div>
+          <div class="plane-content alt">
+            <div class="plane-sublabel">Local Compute → Cloud Production → Observability → Backup → Failover</div>
+            <div class="arch-box">Mac Mini M4 Pro<small>Control Node</small></div>
+            <div class="arch-box">Mac Studio M4 Max<small>AI Workers ×2</small></div>
+            <div class="arch-box">Cloud Postgres<small>System of Record</small></div>
+            <div class="arch-box">Vector DB<small>Embeddings / RAG</small></div>
+            <div class="arch-box">Time-Series DB<small>Signals · Market</small></div>
+            <div class="arch-box">Object Store<small>Docs · Reports</small></div>
+            <div class="arch-box filled">OpenClaw<small>Orchestration</small></div>
+          </div>
+        </div>
+
+      </div><!-- /arch-grid -->
+
+      <div class="note-bar" style="margin-top:20px;">
+        <strong>Design Principles:</strong> Local-first AI · Hybrid architecture · Modular agents · No single point of failure · Continuous self-improvement · Institutional-grade controls from Day 1 · Built for alpha generation, not just insights
+      </div>
+
+      <div class="phase-bar">
+        <div class="phase-col">
+          <div class="phase-col-header">Phase 1 · MVP (0–90 Days)</div>
+          <div class="phase-col-body">
+            <div class="phase-item">OpenClaw control node live</div>
+            <div class="phase-item">3 minerals · 30+ sources</div>
+            <div class="phase-item">Private intelligence dashboard</div>
+            <div class="phase-item">Signal engine v1 deployed</div>
+            <div class="phase-item">Daily brief automated</div>
+            <div class="phase-item">Cloud Postgres + backup active</div>
+          </div>
+        </div>
+        <div class="phase-col">
+          <div class="phase-col-header">Phase 2 · Intelligence (3–6 Mo)</div>
+          <div class="phase-col-body">
+            <div class="phase-item">5 mineral coverage</div>
+            <div class="phase-item">Backtesting engine live</div>
+            <div class="phase-item">Decision engine + sleeves</div>
+            <div class="phase-item">Risk management plane</div>
+            <div class="phase-item">Paper trading gate active</div>
+            <div class="phase-item">Public branded website</div>
+          </div>
+        </div>
+        <div class="phase-col">
+          <div class="phase-col-header">Phase 3 · Institutional (6–12 Mo)</div>
+          <div class="phase-col-body">
+            <div class="phase-item">Live execution all venues</div>
+            <div class="phase-item">Self-improving feedback loop</div>
+            <div class="phase-item">Full compliance plane</div>
+            <div class="phase-item">Investor portal + API access</div>
+            <div class="phase-item">Multi-region cloud resilience</div>
+            <div class="phase-item">Mac Studio M3 Ultra added</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="sheet-footer">
+      <span>DMX AI Intelligence Platform · Critical Minerals &amp; Precious Metals · Confidential</span>
+      <span>Fig. 01 · Full System Architecture · 10 Integrated Planes</span>
+      <span>March 2026</span>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= PAGE 02 — AGENT PIPELINE ========================= -->
+<div class="page" id="page-1">
+  <div class="diagram-sheet">
+    <div class="sheet-header">
+      <div>
+        <div class="sheet-title">Diagram 02 · Agent Architecture</div>
+        <div class="sheet-name">Six-Agent Intelligence<br>Pipeline</div>
+      </div>
+      <div class="sheet-meta">
+        OpenClaw Orchestration<br>
+        Narrow-Purpose · Auditable · Failure-Safe<br>
+        Confidential · March 2026
+      </div>
+    </div>
+    <div class="diagram-body">
+
+      <div class="note-bar">
+        <strong>Architecture Principle:</strong> No single super-agent. Each agent has a narrow job, clear inputs, structured outputs, explicit failure handling, and an independent retry/alert path. The competitive edge is in data ontology and signal engineering — not AI alone.
+      </div>
+
+      <div style="margin-top:24px;">
+        <div class="agent-flow">
+
+          <div class="agent-node">
+            <div class="agent-node-header"><span class="num">01</span>Source Harvester</div>
+            <div class="agent-node-body">
+              <span class="label">Inputs</span>
+              Source list config<br>RSS · Websites · APIs
+              <span class="label">Frequency</span>
+              15–60 min cycles
+              <span class="label">Models</span>
+              Rules-based crawler<br>LLM change detection
+              <span class="label">Output</span>
+              Raw docs · Diff alerts<br>Source metadata
+              <span class="label">Failure</span>
+              Retry ×3 → alert<br>Stale source flag
+            </div>
+          </div>
+
+          <div class="agent-connector">
+            <svg viewBox="0 0 24 20"><line x1="2" y1="10" x2="20" y2="10" stroke="#888" stroke-width="1.5"></line><polygon points="16,6 22,10 16,14" fill="#888"></polygon></svg>
+          </div>
+
+          <div class="agent-node">
+            <div class="agent-node-header"><span class="num">02</span>Document Parser</div>
+            <div class="agent-node-body">
+              <span class="label">Inputs</span>
+              Raw docs (PDF/HTML<br>Email/Spreadsheet)
+              <span class="label">Frequency</span>
+              On new doc arrival
+              <span class="label">Models</span>
+              Local LLM extractor<br>Structured schema
+              <span class="label">Output</span>
+              Events table records:<br>Co · Mine · Date · Qty
+              <span class="label">Failure</span>
+              Low-confidence flag<br>Human review queue
+            </div>
+          </div>
+
+          <div class="agent-connector">
+            <svg viewBox="0 0 24 20"><line x1="2" y1="10" x2="20" y2="10" stroke="#888" stroke-width="1.5"></line><polygon points="16,6 22,10 16,14" fill="#888"></polygon></svg>
+          </div>
+
+          <div class="agent-node">
+            <div class="agent-node-header"><span class="num">03</span>Entity Resolver</div>
+            <div class="agent-node-body">
+              <span class="label">Inputs</span>
+              Raw events w/ aliases<br>Asset ontology DB
+              <span class="label">Frequency</span>
+              Real-time / on-ingest
+              <span class="label">Models</span>
+              Fuzzy match + embed<br>Canonical lookup
+              <span class="label">Output</span>
+              Clean asset IDs<br>Linked event records
+              <span class="label">Failure</span>
+              Unresolved → quarantine<br>Manual resolution
+            </div>
+          </div>
+
+          <div class="agent-connector">
+            <svg viewBox="0 0 24 20"><line x1="2" y1="10" x2="20" y2="10" stroke="#888" stroke-width="1.5"></line><polygon points="16,6 22,10 16,14" fill="#888"></polygon></svg>
+          </div>
+
+          <div class="agent-node">
+            <div class="agent-node-header"><span class="num">04</span>Signal Engine</div>
+            <div class="agent-node-body">
+              <span class="label">Inputs</span>
+              Resolved events<br>Market data · History
+              <span class="label">Frequency</span>
+              15-min + daily batch
+              <span class="label">Models</span>
+              Rules engine → z-score<br>Gradient boosting
+              <span class="label">Output</span>
+              5 signal families<br>Bull/Bear · Confidence
+              <span class="label">Failure</span>
+              Stale data → degrade<br>Signal nulled · alert
+            </div>
+          </div>
+
+          <div class="agent-connector">
+            <svg viewBox="0 0 24 20"><line x1="2" y1="10" x2="20" y2="10" stroke="#888" stroke-width="1.5"></line><polygon points="16,6 22,10 16,14" fill="#888"></polygon></svg>
+          </div>
+
+          <div class="agent-node">
+            <div class="agent-node-header"><span class="num">05</span>Narrative Writer</div>
+            <div class="agent-node-body">
+              <span class="label">Inputs</span>
+              Signal table<br>Alert table · Scores
+              <span class="label">Frequency</span>
+              Daily + on alert
+              <span class="label">Models</span>
+              Local LLM (Mistral/<br>Llama) + templates
+              <span class="label">Output</span>
+              Daily brief · Alert<br>Weekly strategy memo
+              <span class="label">Failure</span>
+              Template fallback<br>Human override
+            </div>
+          </div>
+
+          <div class="agent-connector">
+            <svg viewBox="0 0 24 20"><line x1="2" y1="10" x2="20" y2="10" stroke="#888" stroke-width="1.5"></line><polygon points="16,6 22,10 16,14" fill="#888"></polygon></svg>
+          </div>
+
+          <div class="agent-node">
+            <div class="agent-node-header"><span class="num">06</span>Publisher / QA</div>
+            <div class="agent-node-body">
+              <span class="label">Inputs</span>
+              Narratives · Signals<br>Approval config
+              <span class="label">Frequency</span>
+              On narrative ready
+              <span class="label">Models</span>
+              QA rules + HITL<br>Approval gate
+              <span class="label">Output</span>
+              Private dashboard<br>Public site · Email · API
+              <span class="label">Failure</span>
+              Hold for review<br>Publish nothing bad
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="section-divider">
+        <div class="section-divider-line"></div>
+        <div class="section-divider-label">Orchestration Layer — OpenClaw Control Node</div>
+        <div class="section-divider-line"></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;">
+        <div class="arch-box" style="padding:12px 14px;">
+          <div style="font-size:10px;font-family:&#39;DM Mono&#39;,monospace;font-weight:500;margin-bottom:6px;">Task Routing</div>
+          <div style="font-size:9px;color:#888;font-family:&#39;DM Mono&#39;,monospace;line-height:1.6;">Priority queues<br>Agent assignment<br>Dependency graph</div>
+        </div>
+        <div class="arch-box" style="padding:12px 14px;">
+          <div style="font-size:10px;font-family:&#39;DM Mono&#39;,monospace;font-weight:500;margin-bottom:6px;">Scheduling</div>
+          <div style="font-size:9px;color:#888;font-family:&#39;DM Mono&#39;,monospace;line-height:1.6;">Cron + event triggers<br>Retry policies<br>Rate limiting</div>
+        </div>
+        <div class="arch-box" style="padding:12px 14px;">
+          <div style="font-size:10px;font-family:&#39;DM Mono&#39;,monospace;font-weight:500;margin-bottom:6px;">Human-in-Loop</div>
+          <div style="font-size:9px;color:#888;font-family:&#39;DM Mono&#39;,monospace;line-height:1.6;">Approval workflows<br>Review queues<br>Override controls</div>
+        </div>
+        <div class="arch-box filled" style="padding:12px 14px;">
+          <div style="font-size:10px;font-family:&#39;DM Mono&#39;,monospace;font-weight:500;margin-bottom:6px;color:#f0f0ec;">Audit Logging</div>
+          <div style="font-size:9px;color:#aaa;font-family:&#39;DM Mono&#39;,monospace;line-height:1.6;">Every agent action<br>Timestamped<br>Immutable</div>
+        </div>
+      </div>
+
+    </div>
+    <div class="sheet-footer">
+      <span>DMX AI Intelligence Platform · Critical Minerals &amp; Precious Metals · Confidential</span>
+      <span>Fig. 02 · Agent Architecture · Six-Agent Intelligence Pipeline</span>
+      <span>March 2026</span>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= PAGE 03 — DATA FLOW ========================= -->
+<div class="page" id="page-2">
+  <div class="diagram-sheet">
+    <div class="sheet-header">
+      <div>
+        <div class="sheet-title">Diagram 03 · Data Architecture</div>
+        <div class="sheet-name">Data &amp; Memory<br>Topology</div>
+      </div>
+      <div class="sheet-meta">
+        Postgres · Vector DB · Object Store<br>
+        Time-Series · RAG Architecture<br>
+        Confidential · March 2026
+      </div>
+    </div>
+    <div class="diagram-body">
+
+      <div class="data-flow">
+        <div class="df-stage">
+          <div class="df-stage-header">Ingestion</div>
+          <div class="df-item">Exchange APIs</div>
+          <div class="df-item">Mining Releases</div>
+          <div class="df-item">Shipping Data</div>
+          <div class="df-item">Policy Bulletins</div>
+          <div class="df-item">Earnings / SEC</div>
+          <div class="df-item">Satellite Feeds</div>
+          <div class="df-item">Analyst Inputs</div>
+          <div class="df-item">Prediction Mkts</div>
+        </div>
+        <div class="df-arrow">
+          <svg width="32" height="20" viewBox="0 0 32 20"><line x1="2" y1="10" x2="28" y2="10" stroke="#888" stroke-width="1.5"></line><polygon points="22,5 30,10 22,15" fill="#888"></polygon></svg>
+        </div>
+        <div class="df-stage">
+          <div class="df-stage-header">Storage Tier</div>
+          <div class="df-item" style="border-left-color:#000;border-left-width:3px;font-weight:500;">Postgres (SOR)<br><span style="font-size:8.5px;color:#888;">Assets · Events · Signals</span></div>
+          <div class="df-item" style="margin-top:4px;">Vector Database<br><span style="font-size:8.5px;color:#888;">Embeddings · RAG</span></div>
+          <div class="df-item" style="margin-top:4px;">Object Storage<br><span style="font-size:8.5px;color:#888;">Docs · Reports · Archive</span></div>
+          <div class="df-item" style="margin-top:4px;">Time-Series DB<br><span style="font-size:8.5px;color:#888;">Market · Signals · P&amp;L</span></div>
+          <div class="df-item" style="margin-top:4px;">Config Repo<br><span style="font-size:8.5px;color:#888;">Strategy · Limits</span></div>
+          <div class="df-item" style="margin-top:4px;">Audit Log Store<br><span style="font-size:8.5px;color:#888;">Immutable · Append-only</span></div>
+        </div>
+        <div class="df-arrow">
+          <svg width="32" height="20" viewBox="0 0 32 20"><line x1="2" y1="10" x2="28" y2="10" stroke="#888" stroke-width="1.5"></line><polygon points="22,5 30,10 22,15" fill="#888"></polygon></svg>
+        </div>
+        <div class="df-stage">
+          <div class="df-stage-header">Intelligence</div>
+          <div class="df-item">Signal Computation</div>
+          <div class="df-item">RAG Retrieval</div>
+          <div class="df-item">Embedding Index</div>
+          <div class="df-item">Semantic Search</div>
+          <div class="df-item">Backtest Engine</div>
+          <div class="df-item">Model Inference</div>
+          <div class="df-item">Decision Engine</div>
+          <div class="df-item">Risk Scoring</div>
+        </div>
+        <div class="df-arrow">
+          <svg width="32" height="20" viewBox="0 0 32 20"><line x1="2" y1="10" x2="28" y2="10" stroke="#888" stroke-width="1.5"></line><polygon points="22,5 30,10 22,15" fill="#888"></polygon></svg>
+        </div>
+        <div class="df-stage">
+          <div class="df-stage-header">Distribution</div>
+          <div class="df-item">Private Dashboard</div>
+          <div class="df-item">Investor Briefs</div>
+          <div class="df-item">Public Website</div>
+          <div class="df-item">API Feed</div>
+          <div class="df-item">Trading Signals</div>
+          <div class="df-item">Risk Alerts</div>
+          <div class="df-item">Exec Reports</div>
+          <div class="df-item">Audit Export</div>
+        </div>
+      </div>
+
+      <div class="section-divider">
+        <div class="section-divider-line"></div>
+        <div class="section-divider-label">Memory Taxonomy — Three Distinct Layers</div>
+        <div class="section-divider-line"></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+        <div>
+          <div class="arch-box filled" style="padding:14px 16px;margin-bottom:10px;">
+            <div style="font-size:11px;font-family:&#39;DM Mono&#39;,monospace;font-weight:500;margin-bottom:6px;color:#f0f0ec;">Model Memory</div>
+            <div style="font-size:9px;color:#aaa;font-family:&#39;DM Mono&#39;,monospace;line-height:1.7;">Context window only<br>Volatile · Per-inference<br>64–512K tokens<br>Lost on completion end</div>
+          </div>
+          <div class="note-bar" style="font-size:9px;">Apple Silicon unified memory: the 128GB Mac Studios allow very large local models to run efficiently without GPU offload.</div>
+        </div>
+        <div>
+          <div class="arch-box accent" style="padding:14px 16px;margin-bottom:10px;">
+            <div style="font-size:11px;font-family:&#39;DM Mono&#39;,monospace;font-weight:500;margin-bottom:6px;">System Memory</div>
+            <div style="font-size:9px;color:#555;font-family:&#39;DM Mono&#39;,monospace;line-height:1.7;">RAM / Unified Memory<br>Process-lifetime<br>Model weights loaded<br>Agent working state</div>
+          </div>
+          <div class="note-bar" style="font-size:9px;">Agent state maintained in-process; evicted on restart. Stateless agents re-load from Postgres on init.</div>
+        </div>
+        <div>
+          <div class="arch-box" style="padding:14px 16px;border-width:2px;margin-bottom:10px;">
+            <div style="font-size:11px;font-family:&#39;DM Mono&#39;,monospace;font-weight:500;margin-bottom:6px;">Persistent Memory</div>
+            <div style="font-size:9px;color:#555;font-family:&#39;DM Mono&#39;,monospace;line-height:1.7;">Postgres + Vector DB<br>Survives restarts<br>Cross-session state<br>Source of truth</div>
+          </div>
+          <div class="note-bar" style="font-size:9px;">All durable state lives off-machine in cloud. No single local node failure can cause data loss.</div>
+        </div>
+      </div>
+
+      <div class="section-divider">
+        <div class="section-divider-line"></div>
+        <div class="section-divider-label">Postgres Schema — High-Level</div>
+        <div class="section-divider-line"></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;">
+        <div class="arch-box filled" style="padding:10px 12px;"><div style="font-size:9px;font-family:&#39;DM Mono&#39;,monospace;color:#f0f0ec;">assets<br><span style="color:#aaa;font-size:8px;">id · name · type<br>location · operator</span></div></div>
+        <div class="arch-box" style="padding:10px 12px;"><div style="font-size:9px;font-family:&#39;DM Mono&#39;,monospace;">events<br><span style="color:#888;font-size:8px;">asset_id · type<br>date · severity</span></div></div>
+        <div class="arch-box" style="padding:10px 12px;"><div style="font-size:9px;font-family:&#39;DM Mono&#39;,monospace;">signals<br><span style="color:#888;font-size:8px;">asset · family<br>score · confidence</span></div></div>
+        <div class="arch-box" style="padding:10px 12px;"><div style="font-size:9px;font-family:&#39;DM Mono&#39;,monospace;">market_data<br><span style="color:#888;font-size:8px;">symbol · ts<br>price · volume</span></div></div>
+        <div class="arch-box" style="padding:10px 12px;"><div style="font-size:9px;font-family:&#39;DM Mono&#39;,monospace;">publications<br><span style="color:#888;font-size:8px;">type · content<br>channel · status</span></div></div>
+        <div class="arch-box accent" style="padding:10px 12px;"><div style="font-size:9px;font-family:&#39;DM Mono&#39;,monospace;">audit_log<br><span style="color:#555;font-size:8px;">actor · action<br>ts · immutable</span></div></div>
+      </div>
+
+    </div>
+    <div class="sheet-footer">
+      <span>DMX AI Intelligence Platform · Critical Minerals &amp; Precious Metals · Confidential</span>
+      <span>Fig. 03 · Data &amp; Memory Architecture</span>
+      <span>March 2026</span>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= PAGE 04 — CLOSED LOOP ========================= -->
+<div class="page" id="page-3">
+  <div class="diagram-sheet">
+    <div class="sheet-header">
+      <div>
+        <div class="sheet-title">Diagram 04 · Alpha Lifecycle</div>
+        <div class="sheet-name">Self-Improving<br>Closed-Loop System</div>
+      </div>
+      <div class="sheet-meta">
+        Data → Signal → Decision → Execution<br>
+        → Outcome → Feedback → Model Update<br>
+        Confidential · March 2026
+      </div>
+    </div>
+    <div class="diagram-body">
+
+      <div class="note-bar">
+        <strong>Central Design Principle:</strong> This is the difference between "a very smart research platform" and a Renaissance-style signal engine. The loop must be continuous, automated, and measurable. Without it: insight. With it: alpha.
+      </div>
+
+      <!-- Loop as horizontal chain then wrap -->
+      <div style="margin-top:28px;display:grid;grid-template-columns:repeat(5,1fr);gap:0;align-items:stretch;">
+
+        <div style="border:1px solid var(--ink);padding:18px 14px;text-align:center;background:white;">
+          <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:8.5px;letter-spacing:0.12em;text-transform:uppercase;color:#888;margin-bottom:8px;">Stage 1</div>
+          <div style="font-family:&#39;Cormorant Garamond&#39;,serif;font-size:18px;font-weight:600;margin-bottom:8px;">Data</div>
+          <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:9px;color:#666;line-height:1.6;">30+ source ingestion<br>Entity resolution<br>Knowledge graph update</div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:center;background:var(--tint-a);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);"><svg width="28" height="20" viewBox="0 0 28 20"><line x1="2" y1="10" x2="24" y2="10" stroke="#555" stroke-width="1.5"></line><polygon points="18,5 26,10 18,15" fill="#555"></polygon></svg></div>
+        <div style="border:1px solid var(--ink);padding:18px 14px;text-align:center;background:white;margin-left:-1px;">
+          <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:8.5px;letter-spacing:0.12em;text-transform:uppercase;color:#888;margin-bottom:8px;">Stage 2</div>
+          <div style="font-family:&#39;Cormorant Garamond&#39;,serif;font-size:18px;font-weight:600;margin-bottom:8px;">Signals</div>
+          <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:9px;color:#666;line-height:1.6;">5 signal families<br>Rules + ML scoring<br>Confidence assigned</div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:center;background:var(--tint-a);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);"><svg width="28" height="20" viewBox="0 0 28 20"><line x1="2" y1="10" x2="24" y2="10" stroke="#555" stroke-width="1.5"></line><polygon points="18,5 26,10 18,15" fill="#555"></polygon></svg></div>
+        <div style="border:1px solid var(--ink);padding:18px 14px;text-align:center;background:white;margin-left:-1px;">
+          <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:8.5px;letter-spacing:0.12em;text-transform:uppercase;color:#888;margin-bottom:8px;">Stage 3</div>
+          <div style="font-family:&#39;Cormorant Garamond&#39;,serif;font-size:18px;font-weight:600;margin-bottom:8px;">Backtest</div>
+          <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:9px;color:#666;line-height:1.6;">Walk-forward validation<br>Regime-based testing<br>Strategy versioning</div>
+        </div>
+
+      </div>
+
+      <!-- Row 2 — with return arrow on right -->
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:0;align-items:stretch;margin-top:-1px;">
+
+        <div style="border:1px solid var(--ink);padding:18px 14px;text-align:center;background:var(--ink);color:#f0f0ec;margin-top:-1px;">
+          <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:8.5px;letter-spacing:0.12em;text-transform:uppercase;color:#888;margin-bottom:8px;">Stage 9</div>
+          <div style="font-family:&#39;Cormorant Garamond&#39;,serif;font-size:18px;font-weight:600;margin-bottom:8px;">Model Update</div>
+          <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:9px;color:#aaa;line-height:1.6;">Retrain schedules<br>Prune weak signals<br>Promote strong</div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:center;background:var(--tint-a);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);"><svg width="28" height="20" viewBox="0 0 28 20"><line x1="26" y1="10" x2="4" y2="10" stroke="#555" stroke-width="1.5"></line><polygon points="10,5 2,10 10,15" fill="#555"></polygon></svg></div>
+        <div style="border:1px solid var(--ink);padding:18px 14px;text-align:center;background:white;margin-left:-1px;margin-top:-1px;">
+          <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:8.5px;letter-spacing:0.12em;text-transform:uppercase;color:#888;margin-bottom:8px;">Stage 8</div>
+          <div style="font-family:&#39;Cormorant Garamond&#39;,serif;font-size:18px;font-weight:600;margin-bottom:8px;">Feedback</div>
+          <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:9px;color:#666;line-height:1.6;">Signal hit-rate<br>Trade accuracy<br>Decay detection</div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:center;background:var(--tint-a);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);"><svg width="28" height="20" viewBox="0 0 28 20"><line x1="26" y1="10" x2="4" y2="10" stroke="#555" stroke-width="1.5"></line><polygon points="10,5 2,10 10,15" fill="#555"></polygon></svg></div>
+        <div style="border:1px solid var(--ink);padding:18px 14px;text-align:center;background:white;margin-left:-1px;margin-top:-1px;">
+          <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:8.5px;letter-spacing:0.12em;text-transform:uppercase;color:#888;margin-bottom:8px;">Stage 7</div>
+          <div style="font-family:&#39;Cormorant Garamond&#39;,serif;font-size:18px;font-weight:600;margin-bottom:8px;">Attribution</div>
+          <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:9px;color:#666;line-height:1.6;">P&amp;L by signal<br>Strategy breakdown<br>TCA review</div>
+        </div>
+
+      </div>
+
+      <!-- Row 3 — bottom strip: Decision → Risk → Execution → Outcome -->
+      <div style="display:grid;grid-template-columns:1fr 40px 1fr 40px 1fr 40px 1fr;gap:0;align-items:stretch;margin-top:-1px;">
+        <div style="border:1px solid var(--ink);padding:18px 14px;text-align:center;background:white;margin-top:-1px;">
+          <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:8.5px;letter-spacing:0.12em;text-transform:uppercase;color:#888;margin-bottom:8px;">Stage 4</div>
+          <div style="font-family:&#39;Cormorant Garamond&#39;,serif;font-size:18px;font-weight:600;margin-bottom:8px;">Decision</div>
+          <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:9px;color:#666;line-height:1.6;">Portfolio construction<br>Sleeve allocation<br>Conviction scoring</div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:center;background:var(--tint-a);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);"><svg width="28" height="20" viewBox="0 0 28 20"><line x1="2" y1="10" x2="24" y2="10" stroke="#555" stroke-width="1.5"></line><polygon points="18,5 26,10 18,15" fill="#555"></polygon></svg></div>
+        <div style="border:1px solid var(--ink);padding:18px 14px;text-align:center;background:var(--ink-mid);color:#f0f0ec;margin-left:-1px;margin-top:-1px;">
+          <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:8.5px;letter-spacing:0.12em;text-transform:uppercase;color:#888;margin-bottom:8px;">Stage 5</div>
+          <div style="font-family:&#39;Cormorant Garamond&#39;,serif;font-size:18px;font-weight:600;margin-bottom:8px;">Risk Check</div>
+          <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:9px;color:#aaa;line-height:1.6;">Independent gate<br>Kill switch authority<br>VaR · Exposure</div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:center;background:var(--tint-a);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);"><svg width="28" height="20" viewBox="0 0 28 20"><line x1="2" y1="10" x2="24" y2="10" stroke="#555" stroke-width="1.5"></line><polygon points="18,5 26,10 18,15" fill="#555"></polygon></svg></div>
+        <div style="border:1px solid var(--ink);padding:18px 14px;text-align:center;background:white;margin-left:-1px;margin-top:-1px;">
+          <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:8.5px;letter-spacing:0.12em;text-transform:uppercase;color:#888;margin-bottom:8px;">Stage 6</div>
+          <div style="font-family:&#39;Cormorant Garamond&#39;,serif;font-size:18px;font-weight:600;margin-bottom:8px;">Execution</div>
+          <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:9px;color:#666;line-height:1.6;">OMS → Smart Route<br>Multi-venue<br>TCA log</div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:center;background:var(--tint-a);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);"><svg width="28" height="20" viewBox="0 0 28 20"><line x1="2" y1="10" x2="24" y2="10" stroke="#555" stroke-width="1.5"></line><polygon points="18,5 26,10 18,15" fill="#555"></polygon></svg></div>
+        <div style="border:1px solid var(--ink);padding:18px 14px;text-align:center;background:white;margin-left:-1px;margin-top:-1px;">
+          <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:8.5px;letter-spacing:0.12em;text-transform:uppercase;color:#888;margin-bottom:8px;">Stage 7→</div>
+          <div style="font-family:&#39;Cormorant Garamond&#39;,serif;font-size:18px;font-weight:600;margin-bottom:8px;">Outcome</div>
+          <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:9px;color:#666;line-height:1.6;">Realized P&amp;L<br>Prediction vs actual<br>→ Attribution</div>
+        </div>
+      </div>
+
+      <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label">Self-Improvement Engine</div><div class="section-divider-line"></div></div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;">
+        <div class="arch-box" style="padding:12px;"><div style="font-size:10px;font-family:&#39;DM Mono&#39;,monospace;margin-bottom:5px;">Signal Scoring</div><div style="font-size:8.5px;color:#888;font-family:&#39;DM Mono&#39;,monospace;line-height:1.6;">Track hit rate per signal<br>Auto-downweight<br>failed signals</div></div>
+        <div class="arch-box" style="padding:12px;"><div style="font-size:10px;font-family:&#39;DM Mono&#39;,monospace;margin-bottom:5px;">Model Retraining</div><div style="font-size:8.5px;color:#888;font-family:&#39;DM Mono&#39;,monospace;line-height:1.6;">Rolling retraining<br>Drift detection<br>Regime reclass.</div></div>
+        <div class="arch-box" style="padding:12px;"><div style="font-size:10px;font-family:&#39;DM Mono&#39;,monospace;margin-bottom:5px;">Strategy Pruning</div><div style="font-size:8.5px;color:#888;font-family:&#39;DM Mono&#39;,monospace;line-height:1.6;">Auto-deprecate<br>underperformers<br>Promote winners</div></div>
+        <div class="arch-box filled" style="padding:12px;"><div style="font-size:10px;font-family:&#39;DM Mono&#39;,monospace;margin-bottom:5px;color:#f0f0ec;">Factor Lab</div><div style="font-size:8.5px;color:#aaa;font-family:&#39;DM Mono&#39;,monospace;line-height:1.6;">New factor testing<br>A/B paper trading<br>Controlled rollout</div></div>
+      </div>
+
+    </div>
+    <div class="sheet-footer">
+      <span>DMX AI Intelligence Platform · Critical Minerals &amp; Precious Metals · Confidential</span>
+      <span>Fig. 04 · Alpha Lifecycle · Closed-Loop Self-Improvement</span>
+      <span>March 2026</span>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= PAGE 05 — HARDWARE ========================= -->
+<div class="page" id="page-4">
+  <div class="diagram-sheet">
+    <div class="sheet-header">
+      <div>
+        <div class="sheet-title">Diagram 05 · Hardware Topology</div>
+        <div class="sheet-name">Local Compute +<br>Cloud Infrastructure</div>
+      </div>
+      <div class="sheet-meta">
+        MVP → Institutional Expansion<br>
+        Local-First · Hybrid Architecture<br>
+        Confidential · March 2026
+      </div>
+    </div>
+    <div class="diagram-body">
+
+      <div class="hw-grid">
+
+        <div class="hw-zone">
+          <div class="hw-zone-header">Local — Phase 1 (MVP)</div>
+          <div class="hw-zone-body">
+            <div class="hw-machine primary">
+              <div class="name">Mac Mini M4 Pro</div>
+              <div class="spec">
+                64GB Unified Memory<br>
+                <strong>Role: Control Node</strong><br>
+                OpenClaw orchestration<br>
+                Task routing + scheduling<br>
+                Human-in-loop approvals<br>
+                Config management<br>
+                Light inference only
+              </div>
+            </div>
+            <div class="hw-machine secondary">
+              <div class="name">Mac Studio M4 Max ×2</div>
+              <div class="spec">
+                128GB Unified Memory each<br>
+                <strong>Role: AI Worker Nodes</strong><br>
+                Local LLM inference<br>
+                Document parsing<br>
+                Signal computation<br>
+                Embedding generation<br>
+                Narrative writing
+              </div>
+            </div>
+            <div class="note-bar" style="font-size:9px;margin-top:8px;">Apple Silicon unified memory = large local models without GPU offload. No per-token API cost for core workloads.</div>
+          </div>
+        </div>
+
+        <div class="hw-zone">
+          <div class="hw-zone-header">Cloud — Phase 1 (MVP)</div>
+          <div class="hw-zone-body">
+            <div class="hw-machine cloud">
+              <div class="name">Postgres (Managed)</div>
+              <div class="spec">System of record<br>Multi-AZ · Auto-failover<br>Hourly incremental backup<br>Daily full backup</div>
+            </div>
+            <div class="hw-machine cloud">
+              <div class="name">Vector Database</div>
+              <div class="spec">Embeddings store<br>Semantic search<br>RAG retrieval layer</div>
+            </div>
+            <div class="hw-machine cloud">
+              <div class="name">Object Storage</div>
+              <div class="spec">Docs · Reports · Archive<br>Versioned · Immutable<br>S3-compatible</div>
+            </div>
+            <div class="hw-machine cloud">
+              <div class="name">App Server + API</div>
+              <div class="spec">Dashboard backend<br>API distribution<br>Auth + rate limiting</div>
+            </div>
+            <div class="hw-machine cloud">
+              <div class="name">Monitoring + Logging</div>
+              <div class="spec">Uptime · Latency · Errors<br>Agent health checks<br>Slack / email alerts</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="hw-zone" style="border-color:#888;">
+          <div class="hw-zone-header">Expansion — Phase 2–3</div>
+          <div class="hw-zone-body">
+            <div class="hw-machine secondary">
+              <div class="name">Mac Studio M3 Ultra</div>
+              <div class="spec">
+                256GB–512GB Unified<br>
+                <strong>Role: Large Model Node</strong><br>
+                70B+ parameter models<br>
+                Complex reasoning<br>
+                Strategy research<br>
+                Narrative generation
+              </div>
+            </div>
+            <div class="hw-machine cloud" style="margin-top:8px;">
+              <div class="name">Cloud GPU Clusters</div>
+              <div class="spec">On-demand burst<br>Backtesting at scale<br>Monte Carlo runs<br>Model fine-tuning</div>
+            </div>
+            <div class="hw-machine cloud">
+              <div class="name">Multi-Region DB</div>
+              <div class="spec">Read replicas<br>Cross-region failover<br>RPO: 1hr · RTO: 15min</div>
+            </div>
+            <div class="hw-machine cloud">
+              <div class="name">Time-Series DB</div>
+              <div class="spec">Market data<br>Signal history<br>P&amp;L attribution<br>Real-time streaming</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label">Workload Distribution</div><div class="section-divider-line"></div></div>
+
+      <table class="bk-table">
+        <thead>
+          <tr>
+            <th>Workload</th>
+            <th>Mac Mini (Control)</th>
+            <th>Mac Studios (Workers)</th>
+            <th>Cloud</th>
+            <th>Mode</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>OpenClaw Orchestration</td><td>✓ Primary</td><td>—</td><td>Config sync</td><td>Real-time</td></tr>
+          <tr><td>Source Harvesting</td><td>Scheduling only</td><td>✓ Execution</td><td>Fetch via proxy</td><td>15–60min cycle</td></tr>
+          <tr><td>Document Parsing</td><td>Task dispatch</td><td>✓ Inference</td><td>Storage</td><td>On-ingest</td></tr>
+          <tr><td>Signal Computation</td><td>—</td><td>✓ Compute</td><td>Write to Postgres</td><td>15-min + batch</td></tr>
+          <tr><td>LLM Inference (local)</td><td>—</td><td>✓ Primary</td><td>Fallback API</td><td>On-demand</td></tr>
+          <tr><td>Backtesting</td><td>—</td><td>✓ Phase 1</td><td>✓ Phase 2+ (GPU)</td><td>Batch / overnight</td></tr>
+          <tr><td>Postgres (SOR)</td><td>—</td><td>—</td><td>✓ Managed cloud</td><td>Always-on</td></tr>
+          <tr><td>Dashboard serving</td><td>—</td><td>—</td><td>✓ App server</td><td>Real-time</td></tr>
+          <tr><td>Backup orchestration</td><td>Monitor</td><td>—</td><td>✓ Automated</td><td>Scheduled</td></tr>
+        </tbody>
+      </table>
+
+    </div>
+    <div class="sheet-footer">
+      <span>DMX AI Intelligence Platform · Critical Minerals &amp; Precious Metals · Confidential</span>
+      <span>Fig. 05 · Hardware Topology · Local + Cloud</span>
+      <span>March 2026</span>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= PAGE 06 — RISK & EXECUTION ========================= -->
+<div class="page" id="page-5">
+  <div class="diagram-sheet">
+    <div class="sheet-header">
+      <div>
+        <div class="sheet-title">Diagram 06 · Risk &amp; Execution</div>
+        <div class="sheet-name">Risk Control Map +<br>Execution Architecture</div>
+      </div>
+      <div class="sheet-meta">
+        Independent Risk Engine<br>
+        OMS · Smart Routing · Multi-Venue<br>
+        Confidential · March 2026
+      </div>
+    </div>
+    <div class="diagram-body">
+
+      <div class="rex-grid">
+
+        <div class="rex-panel">
+          <div class="rex-panel-header">Risk Management Plane <span class="badge">INDEPENDENT</span></div>
+          <div class="rex-panel-body">
+            <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:8.5px;color:#888;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">Pre-Trade Controls</div>
+            <div class="rex-item"><div class="rex-dot filled"></div>Max position size per asset</div>
+            <div class="rex-item"><div class="rex-dot filled"></div>Sector / geographic exposure limits</div>
+            <div class="rex-item"><div class="rex-dot filled"></div>Gross / net leverage constraints</div>
+            <div class="rex-item"><div class="rex-dot filled"></div>Liquidity threshold checks</div>
+            <div class="rex-item"><div class="rex-dot filled"></div>Margin / borrow availability</div>
+            <div class="rex-item"><div class="rex-dot filled"></div>Venue eligibility / sanctions</div>
+
+            <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:8.5px;color:#888;text-transform:uppercase;letter-spacing:0.1em;margin:12px 0 8px;">Real-Time Risk</div>
+            <div class="rex-item"><div class="rex-dot"></div>Real-time P&amp;L monitoring</div>
+            <div class="rex-item"><div class="rex-dot"></div>Value-at-Risk (VaR) · Expected Shortfall</div>
+            <div class="rex-item"><div class="rex-dot"></div>Drawdown monitoring + alerts</div>
+            <div class="rex-item"><div class="rex-dot"></div>Correlation mapping (cross-asset)</div>
+            <div class="rex-item"><div class="rex-dot"></div>Concentration risk scoring</div>
+            <div class="rex-item"><div class="rex-dot"></div>Counterparty exposure</div>
+
+            <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:8.5px;color:#888;text-transform:uppercase;letter-spacing:0.1em;margin:12px 0 8px;">Kill Switches &amp; Controls</div>
+            <div class="rex-item"><div class="rex-dot kill"></div><strong>Portfolio-level kill switch</strong></div>
+            <div class="rex-item"><div class="rex-dot kill"></div><strong>Strategy-level kill switch</strong></div>
+            <div class="rex-item"><div class="rex-dot kill"></div><strong>Venue-level kill switch</strong></div>
+            <div class="rex-item"><div class="rex-dot kill"></div>Auto-throttle on drawdown breach</div>
+            <div class="rex-item"><div class="rex-dot kill"></div>Auto-throttle on slippage spike</div>
+            <div class="rex-item"><div class="rex-dot kill"></div>Manual override process (CIO sign-off)</div>
+
+            <div class="note-bar" style="margin-top:12px;font-size:9px;"><strong>Critical:</strong> Risk system operates independently from alpha generation. It has authority to block or reduce any trade at any stage — including overriding the decision engine.</div>
+          </div>
+        </div>
+
+        <div class="rex-panel">
+          <div class="rex-panel-header">Execution Plane <span class="badge">MULTI-VENUE</span></div>
+          <div class="rex-panel-body">
+            <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:8.5px;color:#888;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">Order Management Stack</div>
+            <div class="rex-item"><div class="rex-dot filled"></div>OMS — Order lifecycle management</div>
+            <div class="rex-item"><div class="rex-dot filled"></div>EMS — Execution management system</div>
+            <div class="rex-item"><div class="rex-dot filled"></div>Smart order router — venue selection</div>
+            <div class="rex-item"><div class="rex-dot filled"></div>Order state tracking + partial fills</div>
+            <div class="rex-item"><div class="rex-dot filled"></div>Cancel / replace logic</div>
+            <div class="rex-item"><div class="rex-dot filled"></div>Execution audit logs (immutable)</div>
+
+            <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:8.5px;color:#888;text-transform:uppercase;letter-spacing:0.1em;margin:12px 0 8px;">Execution Venues</div>
+            <div class="venue-grid">
+              <div class="venue-box"><div class="v-name">CME / COMEX</div><div class="v-type">Commodities Futures</div></div>
+              <div class="venue-box"><div class="v-name">LME</div><div class="v-type">Base Metals</div></div>
+              <div class="venue-box"><div class="v-name">ICE</div><div class="v-type">Energy / Soft Commod.</div></div>
+              <div class="venue-box"><div class="v-name">NYSE / NASDAQ</div><div class="v-type">Equities via Broker</div></div>
+              <div class="venue-box"><div class="v-name">Binance</div><div class="v-type">Crypto / Perp Futures</div></div>
+              <div class="venue-box"><div class="v-name">Deribit</div><div class="v-type">Crypto Options</div></div>
+              <div class="venue-box"><div class="v-name">Bybit</div><div class="v-type">Perp Futures</div></div>
+              <div class="venue-box"><div class="v-name">Polymarket</div><div class="v-type">Prediction Markets</div></div>
+              <div class="venue-box"><div class="v-name">Kalshi</div><div class="v-type">Regulated Predictions</div></div>
+            </div>
+
+            <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:8.5px;color:#888;text-transform:uppercase;letter-spacing:0.1em;margin:12px 0 8px;">Execution Logic</div>
+            <div class="rex-item"><div class="rex-dot"></div>Smart routing — cost + latency optimized</div>
+            <div class="rex-item"><div class="rex-dot"></div>Slippage controls + urgency scoring</div>
+            <div class="rex-item"><div class="rex-dot"></div>Time-slicing for large orders</div>
+            <div class="rex-item"><div class="rex-dot"></div>After-hours / overnight policy</div>
+            <div class="rex-item"><div class="rex-dot"></div>Exchange holiday / session handling</div>
+
+            <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:8.5px;color:#888;text-transform:uppercase;letter-spacing:0.1em;margin:12px 0 8px;">Post-Trade</div>
+            <div class="rex-item"><div class="rex-dot"></div>Trade capture + reconciliation</div>
+            <div class="rex-item"><div class="rex-dot"></div>TCA — execution quality analysis</div>
+            <div class="rex-item"><div class="rex-dot"></div>Allocation to books / sleeves</div>
+            <div class="rex-item"><div class="rex-dot"></div>Exception handling + escalation</div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+    <div class="sheet-footer">
+      <span>DMX AI Intelligence Platform · Critical Minerals &amp; Precious Metals · Confidential</span>
+      <span>Fig. 06 · Risk &amp; Execution Architecture</span>
+      <span>March 2026</span>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= PAGE 07 — BACKUP & FAILOVER ========================= -->
+<div class="page" id="page-6">
+  <div class="diagram-sheet">
+    <div class="sheet-header">
+      <div>
+        <div class="sheet-title">Diagram 07 · Resilience Architecture</div>
+        <div class="sheet-name">Backup, Redundancy<br>&amp; Failover Design</div>
+      </div>
+      <div class="sheet-meta">
+        No Single Point of Failure<br>
+        RPO: 1hr · RTO: 15min (Production)<br>
+        Confidential · March 2026
+      </div>
+    </div>
+    <div class="diagram-body">
+
+      <div class="note-bar">
+        <strong>Design Rule:</strong> All durable state lives off-machine in cloud. No local node failure causes data loss. Compute is stateless and restartable. The only irreplaceable asset is the data — protect it accordingly.
+      </div>
+
+      <div style="margin-top:20px;">
+        <table class="bk-table">
+          <thead>
+            <tr>
+              <th>Component</th>
+              <th>Primary</th>
+              <th>Backup Strategy</th>
+              <th>Failover Behavior</th>
+              <th>RPO</th>
+              <th>RTO</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Postgres (SOR)</strong></td>
+              <td>Managed cloud, multi-AZ</td>
+              <td>Hourly incremental + daily full<br>Offsite immutable copy</td>
+              <td>Auto-failover to standby replica<br>DNS cutover transparent</td>
+              <td><span class="bk-tag ok">1hr</span></td>
+              <td><span class="bk-tag ok">5min</span></td>
+            </tr>
+            <tr>
+              <td><strong>Vector Database</strong></td>
+              <td>Cloud-managed</td>
+              <td>Daily snapshot + S3 export</td>
+              <td>Restore from snapshot<br>Re-embed if needed</td>
+              <td>24hr</td>
+              <td><span class="bk-tag">2hr</span></td>
+            </tr>
+            <tr>
+              <td><strong>Object Storage</strong></td>
+              <td>S3-compatible cloud</td>
+              <td>Versioned · Cross-region replicated<br>Immutable archive tier</td>
+              <td>Region failover automatic<br>No data loss by design</td>
+              <td><span class="bk-tag ok">0</span></td>
+              <td><span class="bk-tag ok">instant</span></td>
+            </tr>
+            <tr>
+              <td><strong>Time-Series DB</strong></td>
+              <td>Cloud-managed</td>
+              <td>Continuous WAL + daily full</td>
+              <td>Standby promotion &lt;5min</td>
+              <td><span class="bk-tag ok">1hr</span></td>
+              <td><span class="bk-tag ok">5min</span></td>
+            </tr>
+            <tr>
+              <td><strong>Mac Mini (Control)</strong></td>
+              <td>Local node</td>
+              <td>Config in Git · State in cloud<br>Stateless — no local state</td>
+              <td>Restart or replace node<br>Pull config from Git · Resume</td>
+              <td><span class="bk-tag ok">0</span></td>
+              <td><span class="bk-tag">30min</span></td>
+            </tr>
+            <tr>
+              <td><strong>Mac Studios (Workers)</strong></td>
+              <td>Local AI workers ×2</td>
+              <td>Stateless · Jobs re-queued<br>Cloud fallback for API models</td>
+              <td>Surviving node takes load<br>Cloud API fallback activated</td>
+              <td><span class="bk-tag ok">0</span></td>
+              <td><span class="bk-tag ok">auto</span></td>
+            </tr>
+            <tr>
+              <td><strong>App Server (Dashboard)</strong></td>
+              <td>Cloud container</td>
+              <td>Container image in registry<br>Config in secrets manager</td>
+              <td>Auto-restart via orchestrator<br>Health check + redeploy</td>
+              <td><span class="bk-tag ok">0</span></td>
+              <td><span class="bk-tag ok">2min</span></td>
+            </tr>
+            <tr>
+              <td><strong>Exchange Connectivity</strong></td>
+              <td>Primary API connection</td>
+              <td>Backup API key · Secondary venue<br>Degraded mode: advisory only</td>
+              <td>Auto-retry · Venue switch<br>Risk system notified instantly</td>
+              <td>N/A</td>
+              <td><span class="bk-tag">5min</span></td>
+            </tr>
+            <tr>
+              <td><strong>Secrets / Config</strong></td>
+              <td>Secrets manager (cloud)</td>
+              <td>Encrypted backup + Git config<br>Rotation policy enforced</td>
+              <td>Re-fetch on restart<br>No secrets on disk</td>
+              <td><span class="bk-tag ok">0</span></td>
+              <td><span class="bk-tag ok">instant</span></td>
+            </tr>
+            <tr>
+              <td><strong>Audit Log</strong></td>
+              <td>Append-only cloud store</td>
+              <td>Cross-region replication<br>Immutable by policy</td>
+              <td>Write to secondary region<br>Never lost · Never editable</td>
+              <td><span class="bk-tag ok">0</span></td>
+              <td><span class="bk-tag ok">instant</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label">Security Controls</div><div class="section-divider-line"></div></div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;">
+        <div class="arch-box filled" style="padding:12px 14px;">
+          <div style="font-size:10px;font-family:&#39;DM Mono&#39;,monospace;color:#f0f0ec;margin-bottom:6px;">Encryption</div>
+          <div style="font-size:8.5px;color:#aaa;font-family:&#39;DM Mono&#39;,monospace;line-height:1.6;">At rest: AES-256<br>In transit: TLS 1.3<br>Key rotation policy</div>
+        </div>
+        <div class="arch-box" style="padding:12px 14px;">
+          <div style="font-size:10px;font-family:&#39;DM Mono&#39;,monospace;margin-bottom:6px;">Access Control</div>
+          <div style="font-size:8.5px;color:#888;font-family:&#39;DM Mono&#39;,monospace;line-height:1.6;">RBAC · MFA required<br>Principle of least priv.<br>Quarterly access review</div>
+        </div>
+        <div class="arch-box" style="padding:12px 14px;">
+          <div style="font-size:10px;font-family:&#39;DM Mono&#39;,monospace;margin-bottom:6px;">Secrets Management</div>
+          <div style="font-size:8.5px;color:#888;font-family:&#39;DM Mono&#39;,monospace;line-height:1.6;">No secrets on disk<br>Vault-based injection<br>Auto-rotation</div>
+        </div>
+        <div class="arch-box accent" style="padding:12px 14px;">
+          <div style="font-size:10px;font-family:&#39;DM Mono&#39;,monospace;margin-bottom:6px;">DR Testing</div>
+          <div style="font-size:8.5px;color:#555;font-family:&#39;DM Mono&#39;,monospace;line-height:1.6;">Quarterly restore tests<br>RTO verified in prod<br>Runbook maintained</div>
+        </div>
+      </div>
+
+    </div>
+    <div class="sheet-footer">
+      <span>DMX AI Intelligence Platform · Critical Minerals &amp; Precious Metals · Confidential</span>
+      <span>Fig. 07 · Backup, Redundancy &amp; Failover</span>
+      <span>March 2026</span>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= PAGE 08 — REPORTING ========================= -->
+<div class="page" id="page-7">
+  <div class="diagram-sheet">
+    <div class="sheet-header">
+      <div>
+        <div class="sheet-title">Diagram 08 · Reporting Architecture</div>
+        <div class="sheet-name">Internal · Investor<br>&amp; Management Reporting</div>
+      </div>
+      <div class="sheet-meta">
+        AI-Generated Narrative · QA Reviewed<br>
+        Real-Time → Daily → Weekly → Monthly<br>
+        Confidential · March 2026
+      </div>
+    </div>
+    <div class="diagram-body">
+
+      <div class="note-bar">
+        <strong>Reporting Principle:</strong> AI generates the first draft. Humans approve before publication. The Narrative Writer agent produces institutional copy from structured signal data — commentary is auditable, versioned, and reproducible.
+      </div>
+
+      <div style="margin-top:20px;">
+        <div class="rpt-grid">
+
+          <div class="rpt-col">
+            <div class="rpt-col-header">Internal — Trading Team</div>
+            <div class="rpt-col-body">
+              <div class="rpt-item"><div class="rpt-icon">↻</div>Real-time P&amp;L dashboard<br><span style="font-size:9px;color:#aaa;font-family:&#39;DM Mono&#39;,monospace;">Tick-by-tick · All sleeves</span></div>
+              <div class="rpt-item"><div class="rpt-icon">≡</div>Strategy sleeve performance<br><span style="font-size:9px;color:#aaa;font-family:&#39;DM Mono&#39;,monospace;">Macro · Commod. · Crypto</span></div>
+              <div class="rpt-item"><div class="rpt-icon">◎</div>Signal attribution dashboard<br><span style="font-size:9px;color:#aaa;font-family:&#39;DM Mono&#39;,monospace;">Which signals drove P&amp;L</span></div>
+              <div class="rpt-item"><div class="rpt-icon">⊗</div>Risk dashboard<br><span style="font-size:9px;color:#aaa;font-family:&#39;DM Mono&#39;,monospace;">VaR · Exposure · Drawdown</span></div>
+              <div class="rpt-item"><div class="rpt-icon">≈</div>Execution quality (TCA)<br><span style="font-size:9px;color:#aaa;font-family:&#39;DM Mono&#39;,monospace;">Slippage · Venue analytics</span></div>
+              <div class="rpt-item"><div class="rpt-icon">△</div>Model drift alerts<br><span style="font-size:9px;color:#aaa;font-family:&#39;DM Mono&#39;,monospace;">Signal decay detection</span></div>
+              <div class="rpt-item"><div class="rpt-icon">◫</div>Liquidity dashboard<br><span style="font-size:9px;color:#aaa;font-family:&#39;DM Mono&#39;,monospace;">Venue depth · Capacity</span></div>
+              <div class="rpt-item"><div class="rpt-icon">!</div>Exceptions dashboard<br><span style="font-size:9px;color:#aaa;font-family:&#39;DM Mono&#39;,monospace;">Risk breaches · Alerts</span></div>
+            </div>
+          </div>
+
+          <div class="rpt-col">
+            <div class="rpt-col-header">External — Investors</div>
+            <div class="rpt-col-body">
+              <div class="rpt-item"><div class="rpt-icon" style="background:var(--ink);color:#f0f0ec;">D</div>Daily flash report<br><span style="font-size:9px;color:#aaa;font-family:&#39;DM Mono&#39;,monospace;">NAV · P&amp;L · Top movers</span></div>
+              <div class="rpt-item"><div class="rpt-icon" style="background:var(--ink);color:#f0f0ec;">W</div>Weekly commentary<br><span style="font-size:9px;color:#aaa;font-family:&#39;DM Mono&#39;,monospace;">Strategy · Markets · Outlook</span></div>
+              <div class="rpt-item"><div class="rpt-icon">M</div>Monthly tear sheet<br><span style="font-size:9px;color:#aaa;font-family:&#39;DM Mono&#39;,monospace;">Performance vs benchmark</span></div>
+              <div class="rpt-item"><div class="rpt-icon">Q</div>Quarterly investor letter<br><span style="font-size:9px;color:#aaa;font-family:&#39;DM Mono&#39;,monospace;">Full attribution · Outlook</span></div>
+              <div class="rpt-item"><div class="rpt-icon">∑</div>NAV summary + tracking<br><span style="font-size:9px;color:#aaa;font-family:&#39;DM Mono&#39;,monospace;">LP-level statements</span></div>
+              <div class="rpt-item"><div class="rpt-icon">%</div>Risk statistics<br><span style="font-size:9px;color:#aaa;font-family:&#39;DM Mono&#39;,monospace;">Sharpe · Sortino · VaR</span></div>
+              <div class="rpt-item"><div class="rpt-icon">♦</div>Sleeve attribution<br><span style="font-size:9px;color:#aaa;font-family:&#39;DM Mono&#39;,monospace;">Winners / Losers</span></div>
+              <div class="rpt-item"><div class="rpt-icon">⊕</div>Current exposures<br><span style="font-size:9px;color:#aaa;font-family:&#39;DM Mono&#39;,monospace;">Sector · Geo · Asset class</span></div>
+            </div>
+          </div>
+
+          <div class="rpt-col">
+            <div class="rpt-col-header">Management Dashboards</div>
+            <div class="rpt-col-body">
+              <div class="rpt-item"><div class="rpt-icon" style="background:var(--ink);color:#f0f0ec;">C</div>CIO Dashboard<br><span style="font-size:9px;color:#aaa;font-family:&#39;DM Mono&#39;,monospace;">Full book · All signals</span></div>
+              <div class="rpt-item"><div class="rpt-icon">O</div>COO Operations Dashboard<br><span style="font-size:9px;color:#aaa;font-family:&#39;DM Mono&#39;,monospace;">Platform health · Ops</span></div>
+              <div class="rpt-item"><div class="rpt-icon">R</div>CRO Risk Dashboard<br><span style="font-size:9px;color:#aaa;font-family:&#39;DM Mono&#39;,monospace;">All risk metrics</span></div>
+              <div class="rpt-item"><div class="rpt-icon">T</div>CTO Platform Dashboard<br><span style="font-size:9px;color:#aaa;font-family:&#39;DM Mono&#39;,monospace;">Infra · Agent health</span></div>
+              <div class="rpt-item"><div class="rpt-icon">I</div>IR / Fundraising Dashboard<br><span style="font-size:9px;color:#aaa;font-family:&#39;DM Mono&#39;,monospace;">Investor pipeline</span></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label">AI Narrative Generation Pipeline</div><div class="section-divider-line"></div></div>
+
+      <div style="display:flex;align-items:stretch;gap:0;">
+        <div class="arch-box filled" style="flex:1;padding:14px 12px;text-align:center;">Signal Data<br><span style="font-size:8.5px;color:#aaa;font-family:&#39;DM Mono&#39;,monospace;">Structured scores<br>Events · Alerts</span></div>
+        <div class="arch-arrow" style="display:flex;align-items:center;padding:0 8px;font-size:18px;">→</div>
+        <div class="arch-box" style="flex:1;padding:14px 12px;text-align:center;">Narrative Writer<br><span style="font-size:8.5px;color:#888;font-family:&#39;DM Mono&#39;,monospace;">Local LLM<br>Template-guided</span></div>
+        <div class="arch-arrow" style="display:flex;align-items:center;padding:0 8px;font-size:18px;">→</div>
+        <div class="arch-box accent" style="flex:1;padding:14px 12px;text-align:center;">Draft Report<br><span style="font-size:8.5px;color:#666;font-family:&#39;DM Mono&#39;,monospace;">Full institutional copy<br>Versioned + logged</span></div>
+        <div class="arch-arrow" style="display:flex;align-items:center;padding:0 8px;font-size:18px;">→</div>
+        <div class="arch-box" style="flex:1;padding:14px 12px;text-align:center;">QA / Human Review<br><span style="font-size:8.5px;color:#888;font-family:&#39;DM Mono&#39;,monospace;">Approval gate<br>Fact-check</span></div>
+        <div class="arch-arrow" style="display:flex;align-items:center;padding:0 8px;font-size:18px;">→</div>
+        <div class="arch-box filled" style="flex:1;padding:14px 12px;text-align:center;">Publisher<br><span style="font-size:8.5px;color:#aaa;font-family:&#39;DM Mono&#39;,monospace;">Dashboard · Email<br>Website · API</span></div>
+      </div>
+
+      <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+        <div class="arch-box" style="padding:10px 12px;"><div style="font-size:9.5px;font-family:&#39;DM Mono&#39;,monospace;margin-bottom:4px;">Daily Brief</div><div style="font-size:8.5px;color:#888;font-family:&#39;DM Mono&#39;,monospace;line-height:1.6;">Market overview · Key events<br>Signal changes · Alerts</div></div>
+        <div class="arch-box" style="padding:10px 12px;"><div style="font-size:9.5px;font-family:&#39;DM Mono&#39;,monospace;margin-bottom:4px;">Weekly Strategy Memo</div><div style="font-size:8.5px;color:#888;font-family:&#39;DM Mono&#39;,monospace;line-height:1.6;">Outlook · Positioning<br>Key risks · Trade ideas</div></div>
+        <div class="arch-box filled" style="padding:10px 12px;"><div style="font-size:9.5px;font-family:&#39;DM Mono&#39;,monospace;margin-bottom:4px;color:#f0f0ec;">Intraday Alerts</div><div style="font-size:8.5px;color:#aaa;font-family:&#39;DM Mono&#39;,monospace;line-height:1.6;">Event-triggered · Instant<br>Slack · Email · Dashboard</div></div>
+      </div>
+
+    </div>
+    <div class="sheet-footer">
+      <span>DMX AI Intelligence Platform · Critical Minerals &amp; Precious Metals · Confidential</span>
+      <span>Fig. 08 · Reporting Architecture · Internal + Investor + Management</span>
+      <span>March 2026</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  function showPage(idx) {
+    document.querySelectorAll('.page').forEach((p, i) => {
+      p.classList.toggle('active', i === idx);
+    });
+    document.querySelectorAll('.nav-tab').forEach((t, i) => {
+      t.classList.toggle('active', i === idx);
+    });
+    window.scrollTo(0, 0);
+  }
+</script>
+
+
+</body></html>
